@@ -1,0 +1,19 @@
+{
+  "name": "pancakes",
+  "version": "0.0.1",
+  "description": "Flexible, SEO-friendly, full-stack JavaScript framework",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gethuman/pancakes.git"
+  },
+  "keywords": [
+    "javascript"
+  ],
+  "author": "Jeff Whelpley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gethuman/pancakes/issues"
+  },
+  "homepage": "https://github.com/gethuman/pancakes"
+}
