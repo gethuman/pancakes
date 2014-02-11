@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/gethuman/pancakes/issues"
   },
-  "homepage": "https://github.com/gethuman/pancakes"
+  "homepage": "https://github.com/gethuman/pancakes",
+  "dependencies": {
+    "lodash": "~2.4.1"
+  }
 }
