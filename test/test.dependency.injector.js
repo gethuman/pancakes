@@ -7,7 +7,7 @@
 var chai = require('chai');
 var should = chai.should();
 var expect = chai.expect;
-var injector = require('../lib/dependancy.injector');
+var injector = require('../lib/dependency.injector');
 
 describe('Unit tests for dependancy.injector', function () {
     describe('getModuleName()', function () {
