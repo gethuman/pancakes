@@ -1,0 +1,8 @@
+--slow 60
+--growl
+--ui bdd
+--debug
+--recursive
+--bail
+--reporter progress
+--timeout 10000
