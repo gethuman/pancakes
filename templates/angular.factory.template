@@ -1,0 +1,9 @@
+angular.module('{{=it.appName}}').{{=it.moduleType}}('{{=it.moduleName}}', [
+    {{~it.params :param:index}}'{{=param}}',{{~}}
+    function({{~it.params :param:index}}{{=param}}{{? index < (it.params.length - 1) }},{{?}}{{~}}) {
+        {{ for(var key in it.convertedParams) { }}
+            var {{=key}} = {{=it.convertedParams[key]}};
+        {{ } }}
+        {{=it.body}}
+    }
+]);
