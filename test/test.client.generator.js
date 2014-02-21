@@ -76,7 +76,7 @@ describe('Unit tests for client.generator', function () {
         });
 
         it('should return null if module is not a client module', function() {
-            var actual = clientGenerator.generateClient('./service.factory', null);
+            var actual = clientGenerator.generateClient('./utensils', null);
             expect(actual).to.be.null;
         });
 

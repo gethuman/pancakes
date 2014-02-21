@@ -10,31 +10,6 @@ var expect = chai.expect;
 var annotationHelper = require('../lib/annotation.helper');
 
 describe('Unit tests for annotation.helper', function () {
-    describe('getModuleName()', function () {
-        it('should return empty string if no path', function() {
-            var expected = '';
-            var actual = annotationHelper.getModuleName();
-            expect(actual).to.exist;
-            actual.should.equal(expected);
-        });
-
-        it('should get a simple all lower case name', function() {
-            var path = 'something/blah.js';
-            var expected = 'blah';
-            var actual = annotationHelper.getModuleName(path);
-            expect(actual).to.exist;
-            actual.should.equal(expected);
-        });
-
-        it('should turn a dot notation name to camelCase', function() {
-            var path = 'something/blah.boo.yeah.js';
-            var expected = 'blahBooYeah';
-            var actual = annotationHelper.getModuleName(path);
-            expect(actual).to.exist;
-            actual.should.equal(expected);
-        });
-    });
-
     describe('getModuleInfo()', function () {
         it('should return null if no annotation found', function() {
             var flapjack = function () {};

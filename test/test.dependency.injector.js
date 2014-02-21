@@ -4,80 +4,84 @@
  *
  * Unit tets for the dependancy injector
  */
+var Q = require('q');
+var sinon = require('sinon');
 var chai = require('chai');
+var sinonChai = require('sinon-chai');
 var should = chai.should();
 var expect = chai.expect;
-var injector = require('../lib/dependency.injector');
+var chaiAsPromised  = require("chai-as-promised");
+var mochaAsPromised = require("mocha-as-promised");
+var Injector = require('../lib/dependency.injector');
 
-describe('Unit tests for dependency.injector', function () {
+mochaAsPromised();
+chai.use(sinonChai);
+chai.use(chaiAsPromised);
+
+describe('Unit tests for the dependency.injector', function () {
+    /*
+    describe('loadMappings()', function () {
+        it('should load all the mappings recursively in examples/mappings', function() {
+            var injector = new Injector({});
+            var dir = 'examples/mappings';
+            var expected = {
+                oneAnother: 'examples/mappings/one.another',
+                two: 'examples/mappings/two',
+                three: 'examples/mappings/subdir/three',
+                four: 'examples/mappings/subdir/four'
+            };
+            var actual = injector.loadMappings(__dirname + '/..', [dir]);
+            actual.should.deep.equal(expected);
+        });
+    });
+*/
     describe('loadModule()', function () {
-        beforeEach(function () {
-            injector.resetContext();
-        });
-
-        it('should throw an error if the module does not exist', function() {
-            var fn = function () {
-                injector.loadModule('blah.js');
-            };
-            expect(fn).to.throw(Error);
-        });
-
-        it('should require a module as normal if it is an object without a server param', function() {
-            var meta = injector.loadModule('pancakes') || {};
-            meta.cook.should.be.a('function');
-            meta.init.should.be.a('function');
-        });
-
-        it('should load the server param if it exists', function() {
-            var testData = { client: { something: 'yes' } };
-            injector.context.require = function() {
-                return testData;
-            };
-            var actual = injector.loadModule('something');
-            expect(actual).to.exist;
-            actual.should.deep.equal(testData);
-        });
-
-        it('should return back the flapjack function return obj if no params', function() {
-            var testData = { client: { something: 'yes' } };
-            injector.context.require = function() {
-                return function () {
-                    return testData;
-                };
-            };
-            var actual = injector.loadModule('something');
-            expect(actual).to.exist;
-            actual.should.deep.equal(testData);
-        });
-
-        it('should throw an error if there is a circular reference', function() {
-            injector.context.preloadedParamMap = { 'aval': 'something/aval' };
-            injector.context.require = function() {
-                return function (aval) {
-                    return '';
-                };
-            };
-            var fn = function () {
-                injector.loadModule('blah', null);
-            };
-
-            expect(fn).to.throw(/Circular reference/);
-        });
-        
-        it('should use a cached module', function() {
-            var expected = { one: 'two' };
-            injector.context.preloadedParamMap = { 'aval': 'something/aval' };
-            injector.context.cachedModules['something/aval'] = expected;
-            injector.context.require = function() {
-                return function (aval) {
-                    return aval;
-                };
-            };
-
-            var actual = injector.loadModule('blah', null) || {};
+        /*
+        it('should load a simple module', function() {
+            var expected = require('../examples/simple.module')();
+            var injector = new Injector({
+                rootDir: __dirname + '/..'
+            });
+            var actual = injector.loadModule('examples/simple.module');
             actual.should.deep.equal(expected);
         });
 
-        //TODO: load actual require for 3rd party module and then some tests for recursive lookup
+        it('should load a param module with annotation mapping', function() {
+            var expected = require('../examples/simple.module')();
+            var injector = new Injector({
+                rootDir: __dirname + '/..'
+            });
+            var actual = injector.loadModule('examples/annotation.module');
+            actual.should.deep.equal(expected);
+        });
+        
+        it('should load a param module with config mapping', function () {
+            var expected = require('../examples/simple.module')();
+            var injector = new Injector({
+                rootDir: __dirname + '/..',
+                preload: ['examples']
+            });
+            var actual = injector.loadModule('examples/param.module');
+            actual.should.deep.equal(expected);
+        });
+*/
+        it('should load postService', function (done) {
+            var injector = new Injector({
+                rootDir: __dirname + '/..',
+                servicesDir: 'examples',
+                adapterMap: { persist: 'test', search: 'solr' }
+            });
+            var actual = injector.loadModule('postService');
+            expect(actual).to.exist;
+            expect(actual.create).to.exist;
+
+            var data = { something: 'blah' };
+            var promise = actual.create(data);
+
+            Q.all([
+                promise.should.be.fulfilled,
+                promise.should.eventually.deep.equal(data)
+            ]).should.notify(done);
+        });
     });
 });
