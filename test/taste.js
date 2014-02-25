@@ -9,8 +9,8 @@ var Q               = require('q');
 var sinon           = require('sinon');
 var chai            = require('chai');
 var sinonChai       = require('sinon-chai');
-var chaiAsPromised  = require("chai-as-promised");
-var mochaAsPromised = require("mocha-as-promised");
+var chaiAsPromised  = require('chai-as-promised');
+var mochaAsPromised = require('mocha-as-promised');
 
 mochaAsPromised();
 chai.use(sinonChai);

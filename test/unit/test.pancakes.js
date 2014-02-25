@@ -6,10 +6,21 @@
  */
 var taste = require('../taste');
 var name = 'pancakes';
-var utils = taste.target(name);
+var pancakes = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
+    it('should throw error if init not called yet', function () {
+        var fn = function () {
+            pancakes.cook('something');
+        };
+        taste.expect(fn).to.throw(/Pancakes has not yet been initialized/);
+    });
 
-    //TODO: higher level tests for pancakes
+    it('should load a node_modules lib', function () {
+        pancakes.init({});
+        var Q = pancakes.cook('q');
+        taste.expect(Q).to.exist;
+    });
 
+    //TODO: more higher level use cases with various types of injection objects
 });

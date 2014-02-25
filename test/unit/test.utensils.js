@@ -11,26 +11,26 @@ var utils = taste.target(name);
 describe('Unit tests for ' + name, function () {
 
     describe('isJavaScript()', function () {
-        it('should return true if file ends in .js', function() {
+        it('should return true if file ends in .js', function () {
             var actual = utils.isJavaScript('something.js');
             taste.expect(actual).to.be.true;
         });
 
-        it('should return false if file not .js', function() {
+        it('should return false if file not .js', function () {
             var actual = utils.isJavaScript('blah.txt');
             taste.expect(actual).to.be.false;
         });
     });
 
     describe('getModuleName()', function () {
-        it('should return empty string if no path', function() {
+        it('should return empty string if no path', function () {
             var expected = '';
             var actual = utils.getModuleName();
             taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
 
-        it('should get a simple all lower case name', function() {
+        it('should get a simple all lower case name', function () {
             var path = 'something/blah.js';
             var expected = 'blah';
             var actual = utils.getModuleName(path);
@@ -38,7 +38,7 @@ describe('Unit tests for ' + name, function () {
             actual.should.equal(expected);
         });
 
-        it('should turn a dot notation name to camelCase', function() {
+        it('should turn a dot notation name to camelCase', function () {
             var path = 'something/blah.boo.yeah.js';
             var expected = 'blahBooYeah';
             var actual = utils.getModuleName(path);
@@ -48,7 +48,7 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('getModulePath()', function () {
-        it('should simply combine path and filename for non-js', function() {
+        it('should simply combine path and filename for non-js', function () {
             var path = 'foo';
             var fileName = 'choo';
             var expected = 'foo/choo';
@@ -56,7 +56,7 @@ describe('Unit tests for ' + name, function () {
             actual.should.equal(expected);
         });
 
-        it('should combine path and file and remove .js', function() {
+        it('should combine path and file and remove .js', function () {
             var path = 'foo';
             var fileName = 'choo.js';
             var expected = 'foo/choo';
@@ -66,7 +66,7 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('splitCamelCase()', function () {
-        it('should convert camel case to array parts', function() {
+        it('should convert camel case to array parts', function () {
             var camelCase = 'oneTwoThree';
             var expected = ['one', 'two', 'three'];
             var actual = utils.splitCamelCase(camelCase) || [];

@@ -10,7 +10,7 @@ var defaultFactory = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
     describe('isCandidate()', function () {
-        it('should aways return what is sent in', function() {
+        it('should aways return what is sent in', function () {
             var data = 'blah';
             var actual = defaultFactory.isCandidate(data) || '';
             actual.should.equal(data);
@@ -18,7 +18,7 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('create()', function () {
-        it('should call require on the input injector', function() {
+        it('should call require on the input injector', function () {
             var injector = {
                 require: taste.spy()
             };

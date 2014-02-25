@@ -7,7 +7,8 @@
 module.exports = function ($scope, $window) {
     // @module({ "client": true })
 
+    var msg = $scope && $window ? '' : '';
     return {
-        main: 'hello, world'
+        main: 'hello, world' + msg
     };
 };

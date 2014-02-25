@@ -11,13 +11,13 @@ var annotationHelper = taste.target(name);
 describe('Unit tests for ' + name, function () {
 
     describe('getModuleInfo()', function () {
-        it('should return null if no annotation found', function() {
+        it('should return null if no annotation found', function () {
             var flapjack = function () {};
             var actual = annotationHelper.getModuleInfo(flapjack);
             taste.expect(actual).to.be.null;
         });
 
-        it('should throw an error if there is invalid JSON', function() {
+        it('should throw an error if there is invalid JSON', function () {
             var flapjack = function () {
                 // @module({ invalid json here })
             };
@@ -27,7 +27,7 @@ describe('Unit tests for ' + name, function () {
             taste.expect(fn).to.throw(SyntaxError);
         });
 
-        it('should return back parsed JSON in annotation', function() {
+        it('should return back parsed JSON in annotation', function () {
             var flapjack = function () {
                 // @module({ "something": { "one": "two" } })
             };
@@ -39,7 +39,7 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('getParamMap()', function () {
-        it('should get parameter map for given part', function() {
+        it('should get parameter map for given part', function () {
             var flapjack = function () {
                 // @module({ "something": { "one": "two" } })
             };
@@ -51,7 +51,7 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('getServerParamMap()', function () {
-        it('should get server parameter map', function() {
+        it('should get server parameter map', function () {
             var flapjack = function () {
                 // @module({ "server": { "one": "two" } })
             };
@@ -63,7 +63,7 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('getClientParamMap()', function () {
-        it('should get server parameter map', function() {
+        it('should get server parameter map', function () {
             var flapjack = function () {
                 // @module({ "client": { "one": "two" } })
             };
@@ -75,8 +75,8 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('getParameters()', function () {
-        it('should get flapjack parameters in an array', function() {
-            var flapjack = function (one, two, three) {};
+        it('should get flapjack parameters in an array', function () {
+            var flapjack = function (one, two, three) { return one + two + three; };
             var expected = ['one', 'two', 'three'];
             var actual = annotationHelper.getParameters(flapjack);
             taste.expect(actual).to.exist;
@@ -84,5 +84,6 @@ describe('Unit tests for ' + name, function () {
         });
     });
 });
+
 
 
