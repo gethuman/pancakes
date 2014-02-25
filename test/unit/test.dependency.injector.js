@@ -19,7 +19,7 @@ describe('Unit tests for ' + name, function () {
         it('should return empty object if no mappsings', function () {
             var expected = {};
             var actual = injector.loadMappings(taste.fixturesDir, null);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
 
@@ -88,8 +88,8 @@ describe('Unit tests for ' + name, function () {
                 adapterMap: { backend: 'test', repo: 'solr' }
             });
             var actual = injector.loadModule('blahService');
-            taste.expect(actual).to.exist;
-            taste.expect(actual.create).to.exist;
+            taste.should.exist(actual);
+            taste.should.exist(actual.create);
 
             var data = { something: 'blah' };
             var promise = actual.create(data);

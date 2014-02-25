@@ -13,12 +13,12 @@ describe('Unit tests for ' + name, function () {
     describe('isCandidate()', function () {
         it('should return false if there is NOT a slash in the module path', function () {
             var actual = factory.isCandidate('something');
-            taste.expect(actual).to.be.false;
+            actual.should.equal(false);
         });
 
         it('should return true if there is a slash', function () {
-            var acutal = factory.isCandidate('something/another');
-            taste.expect(acutal).to.be.true;
+            var actual = factory.isCandidate('something/another');
+            actual.should.equal(true);
         });
     });
 
@@ -27,7 +27,7 @@ describe('Unit tests for ' + name, function () {
             var data = 'hello';
             var flapjack = function () { return data; };
             var actual = factory.injectFlapjack(flapjack, null, {});
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(data);
         });
 
@@ -41,7 +41,7 @@ describe('Unit tests for ' + name, function () {
                 }
             };
             var actual = factory.injectFlapjack(flapjack, null, injector);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
 
@@ -57,7 +57,7 @@ describe('Unit tests for ' + name, function () {
                 }
             };
             var actual = factory.injectFlapjack(flapjack, null, injector);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(data);
         });
 
@@ -73,7 +73,7 @@ describe('Unit tests for ' + name, function () {
                 }
             };
             var actual = factory.injectFlapjack(flapjack, null, injector);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(data);
         });
     });
@@ -85,7 +85,7 @@ describe('Unit tests for ' + name, function () {
 
             factory.cache[modulePath] = data;
             var actual = factory.create(modulePath, null, null);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(data);
         });
 
@@ -107,7 +107,7 @@ describe('Unit tests for ' + name, function () {
                 }
             };
             var actual = factory.create(data, [], injector);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
             factory.cache[data].should.equal(expected);
         });
@@ -131,7 +131,7 @@ describe('Unit tests for ' + name, function () {
                 }
             };
             var actual = factory.create(data, [], injector);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
             factory.cache[data].should.equal(expected);
         });

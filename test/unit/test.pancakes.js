@@ -19,7 +19,7 @@ describe('Unit tests for ' + name, function () {
     it('should load a node_modules lib', function () {
         pancakes.init({});
         var Q = pancakes.cook('q');
-        taste.expect(Q).to.exist;
+        taste.should.exist(Q);
     });
 
     //TODO: more higher level use cases with various types of injection objects

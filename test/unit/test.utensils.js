@@ -13,12 +13,12 @@ describe('Unit tests for ' + name, function () {
     describe('isJavaScript()', function () {
         it('should return true if file ends in .js', function () {
             var actual = utils.isJavaScript('something.js');
-            taste.expect(actual).to.be.true;
+            actual.should.equal(true);
         });
 
         it('should return false if file not .js', function () {
             var actual = utils.isJavaScript('blah.txt');
-            taste.expect(actual).to.be.false;
+            actual.should.equal(false);
         });
     });
 
@@ -26,7 +26,7 @@ describe('Unit tests for ' + name, function () {
         it('should return empty string if no path', function () {
             var expected = '';
             var actual = utils.getModuleName();
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
 
@@ -34,7 +34,7 @@ describe('Unit tests for ' + name, function () {
             var path = 'something/blah.js';
             var expected = 'blah';
             var actual = utils.getModuleName(path);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
 
@@ -42,7 +42,7 @@ describe('Unit tests for ' + name, function () {
             var path = 'something/blah.boo.yeah.js';
             var expected = 'blahBooYeah';
             var actual = utils.getModuleName(path);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
     });

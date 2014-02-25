@@ -12,17 +12,17 @@ describe('Unit tests for ' + name, function () {
     describe('isCandidate()', function () {
         it('should return false if slash', function () {
             var actual = modelFactory.isCandidate('Something/Blah');
-            taste.expect(actual).to.be.false;
+            actual.should.equal(false);
         });
 
         it('should return false if first letter is not capital', function () {
             var actual = modelFactory.isCandidate('blah');
-            taste.expect(actual).to.be.false;
+            actual.should.equal(false);
         });
 
         it('should return true if no slash and first letter is cap', function () {
             var actual = modelFactory.isCandidate('Blah');
-            taste.expect(actual).to.be.true;
+            actual.should.equal(true);
         });
     });
 

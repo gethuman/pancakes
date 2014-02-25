@@ -14,7 +14,7 @@ describe('Unit tests for ' + name, function () {
         it('should return back the input if invalid', function () {
             var data = 'blah';
             var actual = clientGenerator.getModuleBody(data);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(data);
         });
 
@@ -22,7 +22,7 @@ describe('Unit tests for ' + name, function () {
             var flapjack = function () { return 2; };
             var expected = ' return 2; ';
             var actual = clientGenerator.getModuleBody(flapjack);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
     });
@@ -33,7 +33,7 @@ describe('Unit tests for ' + name, function () {
             var options = { output: 'test', type: 'simple' };
             var expected = 'hello';
             var actual = clientGenerator.renderTemplate(flapjack, 'jeff', options);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
 
@@ -42,7 +42,7 @@ describe('Unit tests for ' + name, function () {
             var options = { output: 'test', type: 'setname' };
             var expected = 'jeff return 2; ';
             var actual = clientGenerator.renderTemplate(flapjack, 'jeff', options);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
 
@@ -51,7 +51,7 @@ describe('Unit tests for ' + name, function () {
             var options = { output: 'test', type: 'params' };
             var expected = 'one,two,three';
             var actual = clientGenerator.renderTemplate(flapjack, 'jeff', options);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
 
@@ -63,7 +63,7 @@ describe('Unit tests for ' + name, function () {
             var options = { output: 'test', type: 'params' };
             var expected = 'one,different,three';
             var actual = clientGenerator.renderTemplate(flapjack, 'jeff', options);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.equal(expected);
         });
     });
@@ -78,7 +78,7 @@ describe('Unit tests for ' + name, function () {
 
         it('should return null if module is not a client module', function () {
             var actual = clientGenerator.generateClient('./utensils', null);
-            taste.expect(actual).to.be.null;
+            taste.should.not.exist(actual);
         });
 
         it('should return module if split client/server', function () {
@@ -89,7 +89,7 @@ describe('Unit tests for ' + name, function () {
                 type: 'factory'
             };
             var actual = clientGenerator.generateClient(clientModulePath, options);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.match(/hello, world/);
         });
 
@@ -101,7 +101,7 @@ describe('Unit tests for ' + name, function () {
                 type: 'factory'
             };
             var actual = clientGenerator.generateClient(clientModulePath, options);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.match(/hello, world/);
         });
     });

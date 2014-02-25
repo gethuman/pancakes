@@ -14,17 +14,17 @@ describe('Unit tests for ' + name, function () {
     describe('isCandidate()', function () {
         it('should return false if there is a slash', function () {
             var actual = factory.isCandidate('something/foo');
-            taste.expect(actual).to.be.false;
+            actual.should.equal(false);
         });
         
         it('should return false if the name does not have Service', function () {
             var actual = factory.isCandidate('somethinyo');
-            taste.expect(actual).to.be.false;
+            actual.should.equal(false);
         });
         
         it('should return true if there is no slash and the name contains Service', function () {
             var actual = factory.isCandidate('someService');
-            taste.expect(actual).to.be.true;
+            actual.should.equal(true);
         });
     });
     
@@ -71,8 +71,8 @@ describe('Unit tests for ' + name, function () {
             var data = 'hello, world';
             var adapter = { one: function () { return data; } };
             var service = factory.putItAllTogether(resource, adapter, null, null);
-            taste.expect(service).to.exist;
-            taste.expect(service.one).to.exist;
+            taste.should.exist(service);
+            taste.should.exist(service.one);
             service.one.should.be.a('function');
 
             var promise = service.one();
@@ -100,8 +100,8 @@ describe('Unit tests for ' + name, function () {
             };
             var adapter = { one: function (input) { return new Q(input + '|adapter'); } };
             var service = factory.putItAllTogether(resource, adapter, filters);
-            taste.expect(service).to.exist;
-            taste.expect(service.one).to.exist;
+            taste.should.exist(service);
+            taste.should.exist(service.one);
             service.one.should.be.a('function');
 
             var promise = service.one('start');
@@ -119,7 +119,7 @@ describe('Unit tests for ' + name, function () {
             var adapterMap = { service: 'generic' };
             var expected = { adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah' };
             var actual = factory.getServiceInfo(serviceName, adapterMap);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
 
@@ -128,7 +128,7 @@ describe('Unit tests for ' + name, function () {
             var adapterMap = { service: 'generic' };
             var expected = { adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah.yo' };
             var actual = factory.getServiceInfo(serviceName, adapterMap);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
 
@@ -137,7 +137,7 @@ describe('Unit tests for ' + name, function () {
             var adapterMap = { backend: 'test' };
             var expected = { adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah' };
             var actual = factory.getServiceInfo(serviceName, adapterMap);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
 
@@ -146,7 +146,7 @@ describe('Unit tests for ' + name, function () {
             var adapterMap = { backend: 'test' };
             var expected = { adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah.another' };
             var actual = factory.getServiceInfo(serviceName, adapterMap);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
     });

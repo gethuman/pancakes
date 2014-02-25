@@ -14,7 +14,7 @@ describe('Unit tests for ' + name, function () {
         it('should return null if no annotation found', function () {
             var flapjack = function () {};
             var actual = annotationHelper.getModuleInfo(flapjack);
-            taste.expect(actual).to.be.null;
+            taste.should.not.exist(actual);
         });
 
         it('should throw an error if there is invalid JSON', function () {
@@ -33,7 +33,7 @@ describe('Unit tests for ' + name, function () {
             };
             var expected = { something: { one: 'two' }};
             var actual = annotationHelper.getModuleInfo(flapjack);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
     });
@@ -45,7 +45,7 @@ describe('Unit tests for ' + name, function () {
             };
             var expected = { one: 'two' };
             var actual = annotationHelper.getParamMap('something', flapjack);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
     });
@@ -57,7 +57,7 @@ describe('Unit tests for ' + name, function () {
             };
             var expected = { one: 'two' };
             var actual = annotationHelper.getServerParamMap(flapjack);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
     });
@@ -69,7 +69,7 @@ describe('Unit tests for ' + name, function () {
             };
             var expected = { one: 'two' };
             var actual = annotationHelper.getClientParamMap(flapjack);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
     });
@@ -79,7 +79,7 @@ describe('Unit tests for ' + name, function () {
             var flapjack = function (one, two, three) { return one + two + three; };
             var expected = ['one', 'two', 'three'];
             var actual = annotationHelper.getParameters(flapjack);
-            taste.expect(actual).to.exist;
+            taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
     });

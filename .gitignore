@@ -3,3 +3,4 @@ node_modules/
 temp/
 coverage
 npm-debug.log
+coverage.html

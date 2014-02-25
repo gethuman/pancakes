@@ -4,7 +4,6 @@
  *
  * Build file for Pancakes
  */
-var q           = require('q');
 var gulp        = require('gulp');
 var mocha       = require('gulp-mocha');
 var jshint      = require('gulp-jshint');
