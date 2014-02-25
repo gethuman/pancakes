@@ -4,17 +4,17 @@
  *
  * Unit tests for the client.generator
  */
-var chai = require('chai');
-var should = chai.should();
-var expect = chai.expect;
-var clientGenerator = require('../lib/client.generator');
+var taste = require('../taste');
+var name = 'client.generator';
+var clientGenerator = taste.target(name);
 
-describe('Unit tests for client.generator', function () {
+describe('Unit tests for ' + name, function () {
+
     describe('getModuleBody()', function () {
         it('should return back the input if invalid', function() {
             var data = 'blah';
             var actual = clientGenerator.getModuleBody(data);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(data);
         });
 
@@ -22,7 +22,7 @@ describe('Unit tests for client.generator', function () {
             var flapjack = function() {return 2;};
             var expected = 'return 2;';
             var actual = clientGenerator.getModuleBody(flapjack);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
     });
@@ -33,7 +33,7 @@ describe('Unit tests for client.generator', function () {
             var options = { output: 'test', type: 'simple' };
             var expected = 'hello';
             var actual = clientGenerator.renderTemplate(flapjack, 'jeff', options);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
 
@@ -42,7 +42,7 @@ describe('Unit tests for client.generator', function () {
             var options = { output: 'test', type: 'setname' };
             var expected = 'jeffreturn 2;';
             var actual = clientGenerator.renderTemplate(flapjack, 'jeff', options);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
 
@@ -51,7 +51,7 @@ describe('Unit tests for client.generator', function () {
             var options = { output: 'test', type: 'params' };
             var expected = 'one,two,three';
             var actual = clientGenerator.renderTemplate(flapjack, 'jeff', options);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
 
@@ -62,7 +62,7 @@ describe('Unit tests for client.generator', function () {
             var options = { output: 'test', type: 'params' };
             var expected = 'one,different,three';
             var actual = clientGenerator.renderTemplate(flapjack, 'jeff', options);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
     });
@@ -72,23 +72,23 @@ describe('Unit tests for client.generator', function () {
             var fn = function () {
                 clientGenerator.generateClient('blah.js', null);
             };
-            expect(fn).to.throw(/Cannot find module/);
+            taste.expect(fn).to.throw(/Cannot find module/);
         });
 
         it('should return null if module is not a client module', function() {
             var actual = clientGenerator.generateClient('./utensils', null);
-            expect(actual).to.be.null;
+            taste.expect(actual).to.be.null;
         });
 
         it('should load our sample client module', function() {
-            var clientModulePath = __dirname + '/../examples/client.module';
+            var clientModulePath = taste.fixturesDir + '/flapjacks/client.module';
             var options = {
                 appName: 'testCommonApp',
                 output: 'angular',
                 type: 'factory'
             };
             var actual = clientGenerator.generateClient(clientModulePath, options);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.match(/hello, world/);
         });
     });

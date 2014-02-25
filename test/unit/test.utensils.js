@@ -4,21 +4,21 @@
  *
  * Unit tests for the pancakes utils
  */
-var chai = require('chai');
-var should = chai.should();
-var expect = chai.expect;
-var utils = require('../lib/utensils');
+var taste = require('../taste');
+var name = 'utensils';
+var utils = taste.target(name);
 
-describe('Unit tests for utensils', function () {
+describe('Unit tests for ' + name, function () {
+
     describe('isJavaScript()', function () {
         it('should return true if file ends in .js', function() {
             var actual = utils.isJavaScript('something.js');
-            expect(actual).to.be.true;
+            taste.expect(actual).to.be.true;
         });
 
         it('should return false if file not .js', function() {
             var actual = utils.isJavaScript('blah.txt');
-            expect(actual).to.be.false;
+            taste.expect(actual).to.be.false;
         });
     });
 
@@ -26,7 +26,7 @@ describe('Unit tests for utensils', function () {
         it('should return empty string if no path', function() {
             var expected = '';
             var actual = utils.getModuleName();
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
 
@@ -34,7 +34,7 @@ describe('Unit tests for utensils', function () {
             var path = 'something/blah.js';
             var expected = 'blah';
             var actual = utils.getModuleName(path);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
 
@@ -42,7 +42,7 @@ describe('Unit tests for utensils', function () {
             var path = 'something/blah.boo.yeah.js';
             var expected = 'blahBooYeah';
             var actual = utils.getModuleName(path);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
     });

@@ -4,21 +4,21 @@
  *
  * Unit tests for the service factory
  */
-var chai = require('chai');
-var should = chai.should();
-var expect = chai.expect;
-var flapjackFactory = require('../../lib/factories/flapjack.factory');
+var taste = require('../../taste');
+var name = 'factories/flapjack.factory';
+var factory = taste.target(name);
 
-describe('Unit tests for flapjack.factory', function () {
+describe('Unit tests for ' + name, function () {
+    
     describe('isCandidate()', function () {
         it('should return false if there is NOT a slash in the module path', function() {
-            var actual = flapjackFactory.isCandidate('something');
-            expect(actual).to.be.false;
+            var actual = factory.isCandidate('something');
+            taste.expect(actual).to.be.false;
         });
 
         it('should return true if there is a slash', function() {
-            var acutal = flapjackFactory.isCandidate('something/another');
-            expect(acutal).to.be.true;
+            var acutal = factory.isCandidate('something/another');
+            taste.expect(acutal).to.be.true;
         });
     });
 
@@ -26,8 +26,8 @@ describe('Unit tests for flapjack.factory', function () {
         it('should simply call the flapjack with no params', function() {
             var data = 'hello';
             var flapjack = function () { return data; };
-            var actual = flapjackFactory.injectFlapjack(flapjack, null, {});
-            expect(actual).to.exist;
+            var actual = factory.injectFlapjack(flapjack, null, {});
+            taste.expect(actual).to.exist;
             actual.should.equal(data);
         });
 
@@ -40,8 +40,8 @@ describe('Unit tests for flapjack.factory', function () {
                     return data;
                 }
             };
-            var actual = flapjackFactory.injectFlapjack(flapjack, null, injector);
-            expect(actual).to.exist;
+            var actual = factory.injectFlapjack(flapjack, null, injector);
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
         });
 
@@ -56,8 +56,8 @@ describe('Unit tests for flapjack.factory', function () {
                     foo: data
                 }
             };
-            var actual = flapjackFactory.injectFlapjack(flapjack, null, injector);
-            expect(actual).to.exist;
+            var actual = factory.injectFlapjack(flapjack, null, injector);
+            taste.expect(actual).to.exist;
             actual.should.equal(data);
         });
 
@@ -72,8 +72,8 @@ describe('Unit tests for flapjack.factory', function () {
                     return param;
                 }
             };
-            var actual = flapjackFactory.injectFlapjack(flapjack, null, injector);
-            expect(actual).to.exist;
+            var actual = factory.injectFlapjack(flapjack, null, injector);
+            taste.expect(actual).to.exist;
             actual.should.equal(data);
         });
     });
@@ -83,17 +83,17 @@ describe('Unit tests for flapjack.factory', function () {
             var modulePath = 'foo';
             var data = 'hello';
 
-            flapjackFactory.cache[modulePath] = data;
-            var actual = flapjackFactory.create(modulePath, null, null);
-            expect(actual).to.exist;
+            factory.cache[modulePath] = data;
+            var actual = factory.create(modulePath, null, null);
+            taste.expect(actual).to.exist;
             actual.should.equal(data);
         });
 
         it('should throw an error if the file does not exist', function() {
             var fn = function () {
-                flapjackFactory.create('blah', null, {});
+                factory.create('blah', null, {});
             };
-            expect(fn).to.throw(/FlapjackFactory got invalid file path/);
+            taste.expect(fn).to.throw(/FlapjackFactory got invalid file path/);
         });
 
         it('should return module without injection if not a function', function() {
@@ -106,10 +106,10 @@ describe('Unit tests for flapjack.factory', function () {
                     return parts[parts.length - 1];
                 }
             };
-            var actual = flapjackFactory.create(data, [], injector);
-            expect(actual).to.exist;
+            var actual = factory.create(data, [], injector);
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
-            flapjackFactory.cache[data].should.equal(expected);
+            factory.cache[data].should.equal(expected);
         });
 
         it('should instantiate and inject a fake real flapjack', function() {
@@ -130,10 +130,10 @@ describe('Unit tests for flapjack.factory', function () {
                     foo: 'something/foo'
                 }
             };
-            var actual = flapjackFactory.create(data, [], injector);
-            expect(actual).to.exist;
+            var actual = factory.create(data, [], injector);
+            taste.expect(actual).to.exist;
             actual.should.equal(expected);
-            flapjackFactory.cache[data].should.equal(expected);
+            factory.cache[data].should.equal(expected);
         });
     });
 });

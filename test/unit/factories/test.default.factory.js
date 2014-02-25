@@ -4,18 +4,14 @@
  *
  * Unit tests for the service factory
  */
-var sinon = require('sinon');
-var chai = require('chai');
-var sinonChai = require('sinon-chai');
-var should = chai.should();
-var expect = chai.expect;
-var defaultFactory = require('../../lib/factories/default.factory');
-chai.use(sinonChai);
+var taste = require('../../taste');
+var name = 'factories/default.factory';
+var defaultFactory = taste.target(name);
 
-describe('Unit tests for default.factory', function () {
+describe('Unit tests for ' + name, function () {
     describe('isCandidate()', function () {
         it('should aways return what is sent in', function() {
-            var data = 'blah'
+            var data = 'blah';
             var actual = defaultFactory.isCandidate(data) || '';
             actual.should.equal(data);
         });
@@ -24,7 +20,7 @@ describe('Unit tests for default.factory', function () {
     describe('create()', function () {
         it('should call require on the input injector', function() {
             var injector = {
-                require: sinon.spy()
+                require: taste.spy()
             };
             var modulePath = 'blah';
 

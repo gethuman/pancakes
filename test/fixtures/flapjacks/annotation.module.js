@@ -5,7 +5,7 @@
  * Example of a module using annotations
  */
 module.exports = function (simpleModule) {
-    // @module({ "server": { "simpleModule": "examples/simple.module" }})
+    // @module({ "server": { "simpleModule": "flapjacks/simple.module" }})
 
     return simpleModule;
 };

@@ -5,34 +5,26 @@
  * Unit tests for the service factory
  */
 var Q = require('q');
-var sinon = require('sinon');
-var chai = require('chai');
-var sinonChai = require('sinon-chai');
-var should = chai.should();
-var expect = chai.expect;
-var chaiAsPromised  = require("chai-as-promised");
-var mochaAsPromised = require("mocha-as-promised");
-var serviceFactory = require('../../lib/factories/service.factory');
+var taste = require('../../taste');
+var name = 'factories/service.factory';
+var factory = taste.target(name);
 
-mochaAsPromised();
-chai.use(sinonChai);
-chai.use(chaiAsPromised);
-
-describe('Unit tests for service.factory', function () {
+describe('Unit tests for ' + name, function () {
+    
     describe('isCandidate()', function () {
         it('should return false if there is a slash', function() {
-            var actual = serviceFactory.isCandidate('something/foo');
-            expect(actual).to.be.false;
+            var actual = factory.isCandidate('something/foo');
+            taste.expect(actual).to.be.false;
         });
         
         it('should return false if the name does not have Service', function() {
-            var actual = serviceFactory.isCandidate('somethinyo');
-            expect(actual).to.be.false;
+            var actual = factory.isCandidate('somethinyo');
+            taste.expect(actual).to.be.false;
         });
         
         it('should return true if there is no slash and the name contains Service', function() {
-            var actual = serviceFactory.isCandidate('someService');
-            expect(actual).to.be.true;
+            var actual = factory.isCandidate('someService');
+            taste.expect(actual).to.be.true;
         });
     });
     
@@ -46,31 +38,31 @@ describe('Unit tests for service.factory', function () {
                     return new Q(input + '|two');
                 }
             ];
-            var serviceMethod = serviceFactory.getServiceMethod(calls);
+            var serviceMethod = factory.getServiceMethod(calls);
             serviceMethod.should.be.a('function');
 
             var expected = 'start|one|two';
             var promise = serviceMethod('start');
 
-            Q.all([
+            taste.all([
                 promise.should.be.fulfilled,
                 promise.should.eventually.equal(expected)
-            ]).should.notify(done);
+            ], done);
         });
     });
     
     describe('putItAllTogether()', function () {
         it('should throw an error if there are no methods', function() {
             var fn = function () {
-                serviceFactory.putItAllTogether({ name: 'blah' }, {}, {}, {});
+                factory.putItAllTogether({ name: 'blah' }, {}, {}, {});
             };
-            expect(fn).to.throw(/Resource blah has no methods/);
+            taste.expect(fn).to.throw(/Resource blah has no methods/);
         });
         
         it('should return an empty object if the adapter has no matching methods', function() {
             var resource = { name: 'blah', methods: ['one', 'two'] };
             var adapter = {};
-            var service = serviceFactory.putItAllTogether(resource, adapter, null, null);
+            var service = factory.putItAllTogether(resource, adapter, null, null);
             service.should.deep.equal({});
         });
         
@@ -78,79 +70,83 @@ describe('Unit tests for service.factory', function () {
             var resource = { name: 'blah', methods: ['one', 'two'] };
             var data = 'hello, world';
             var adapter = { one: function () { return data; } };
-            var service = serviceFactory.putItAllTogether(resource, adapter, null, null);
-            expect(service).to.exist;
-            expect(service.one).to.exist;
+            var service = factory.putItAllTogether(resource, adapter, null, null);
+            taste.expect(service).to.exist;
+            taste.expect(service.one).to.exist;
             service.one.should.be.a('function');
 
             var promise = service.one();
 
-            Q.all([
+            taste.all([
                 promise.should.be.fulfilled,
                 promise.should.eventually.equal(data)
-            ]).should.notify(done);
+            ], done);
         });
 
         it('should return an object with all the matching adapter methods (with filters)', function(done) {
             var resource = { name: 'blah', methods: ['one', 'two'] };
-            var expected = 'start|before|adapter|after';
-            var filters = [{
-                one_before: function (input) {
-                    return new Q(input + '|before');
-                },
-                one_after: function (input) {
-                    return new Q(input + '|after');
-                }
-            }];
+            var expected = 'start|something|another|adapter|lastOne';
+            var filters = {
+                beforeFilters: [
+                    { name: 'applySomething', all: true },
+                    { name: 'applyAnother', all: true }
+                ],
+                afterFilters: [
+                    { name: 'lastOne', all: true }
+                ],
+                applySomething: function (input) { return new Q(input + '|something'); },
+                applyAnother: function (input) { return new Q(input + '|another'); },
+                lastOne: function (input) { return new Q(input + '|lastOne'); }
+            };
             var adapter = { one: function (input) { return new Q(input + '|adapter'); } };
-            var service = serviceFactory.putItAllTogether(resource, adapter, filters, filters);
-            expect(service).to.exist;
-            expect(service.one).to.exist;
+            var service = factory.putItAllTogether(resource, adapter, filters);
+            taste.expect(service).to.exist;
+            taste.expect(service.one).to.exist;
             service.one.should.be.a('function');
 
             var promise = service.one('start');
 
-            Q.all([
+            taste.all([
                 promise.should.be.fulfilled,
                 promise.should.eventually.equal(expected)
-            ]).should.notify(done);
+            ], done);
         });
     });
 
     describe('getServiceInfo()', function () {
-        it('should set adapter and service for postService', function() {
-            var serviceName = 'postService';
+        it('should set adapter and service for blahService', function() {
+            var serviceName = 'blahService';
             var adapterMap = { service: 'generic' };
-            var expected = { adapterName: 'service', adapterImpl: 'generic', resourceName: 'post' };
-            var actual = serviceFactory.getServiceInfo(serviceName, adapterMap);
-            expect(actual).to.exist;
+            var expected = { adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah' };
+            var actual = factory.getServiceInfo(serviceName, adapterMap);
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
 
-        it('should set adapter and service for postYoService', function() {
-            var serviceName = 'postYoService';
+        it('should set adapter and service for blahYoService', function() {
+            var serviceName = 'blahYoService';
             var adapterMap = { service: 'generic' };
-            var expected = { adapterName: 'service', adapterImpl: 'generic', resourceName: 'post.yo' };
-            var actual = serviceFactory.getServiceInfo(serviceName, adapterMap);
-            expect(actual).to.exist;
+            var expected = { adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah.yo' };
+            var actual = factory.getServiceInfo(serviceName, adapterMap);
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
 
-        it('should set adapter and service for postPersistService', function() {
-            var serviceName = 'postPersistService';
-            var adapterMap = { persist: 'test' };
-            var expected = { adapterName: 'persist', adapterImpl: 'test', resourceName: 'post' };
-            var actual = serviceFactory.getServiceInfo(serviceName, adapterMap);
-            expect(actual).to.exist;
+        it('should set adapter and service for blahBackendService', function() {
+            var serviceName = 'blahBackendService';
+            var adapterMap = { backend: 'test' };
+            var expected = { adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah' };
+            var actual = factory.getServiceInfo(serviceName, adapterMap);
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
 
-        it('should set adapter and service for postAnotherPersistService', function() {
-            var serviceName = 'postAnotherPersistService';
-            var adapterMap = { persist: 'test' };
-            var expected = { adapterName: 'persist', adapterImpl: 'test', resourceName: 'post.another' };
-            var actual = serviceFactory.getServiceInfo(serviceName, adapterMap);
-            expect(actual).to.exist;
+        it('should set adapter and service for blahAnotherBackendService', function() {
+            var serviceName = 'blahAnotherBackendService';
+            var adapterMap = { backend: 'test' };
+            var expected = { adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah.another' };
+            var actual = factory.getServiceInfo(serviceName, adapterMap);
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
     });
@@ -160,21 +156,21 @@ describe('Unit tests for service.factory', function () {
             var serviceInfo = {};
             var injector = {};
             var fn = function () {
-                serviceFactory.getResource(serviceInfo, injector);
+                factory.getResource(serviceInfo, injector);
             };
-            expect(fn).to.throw(/ServiceFactory could not find resource/);
+            taste.expect(fn).to.throw(/ServiceFactory could not find resource/);
         });
 
         it('should load the resource module if it is valid', function() {
-            var serviceInfo = { resourceName: 'post' };
+            var serviceInfo = { resourceName: 'blah' };
             var injector = {
-                rootDir: __dirname + '/../..',
-                servicesDir: 'examples',
-                loadModule: sinon.spy()
+                rootDir: taste.fixturesDir,
+                servicesDir: 'services',
+                loadModule: taste.spy()
             };
 
-            serviceFactory.getResource(serviceInfo, injector);
-            injector.loadModule.should.have.been.calledWith('examples/resources/post/post.resource');
+            factory.getResource(serviceInfo, injector);
+            injector.loadModule.should.have.been.calledWith('services/resources/blah/blah.resource');
         });
     });
 
@@ -187,7 +183,7 @@ describe('Unit tests for service.factory', function () {
             var adapterMap = {};
             var container = '';
 
-            serviceFactory.checkForDefaultAdapter(serviceInfo, resource, adapterMap, container);
+            factory.checkForDefaultAdapter(serviceInfo, resource, adapterMap, container);
             serviceInfo.adapterName.should.equal(adapterName);
             serviceInfo.adapterImpl.should.equal(adapterImpl);
         });
@@ -195,14 +191,14 @@ describe('Unit tests for service.factory', function () {
         it('should change the adapter name if a service and default there', function() {
             var adapterName = 'service';
             var adapterImpl = 'impl';
-            var expectedName = 'persist';
+            var expectedName = 'backend';
             var expectedImpl = 'test';
             var serviceInfo = { adapterName: adapterName, adapterImpl: adapterImpl };
-            var resource = { adapters: { api: 'persist' } };
-            var adapterMap = { persist: 'test' };
+            var resource = { adapters: { api: 'backend' } };
+            var adapterMap = { backend: 'test' };
             var container = 'api';
 
-            serviceFactory.checkForDefaultAdapter(serviceInfo, resource, adapterMap, container);
+            factory.checkForDefaultAdapter(serviceInfo, resource, adapterMap, container);
             serviceInfo.adapterName.should.equal(expectedName);
             serviceInfo.adapterImpl.should.equal(expectedImpl);
         });
@@ -213,20 +209,20 @@ describe('Unit tests for service.factory', function () {
             var serviceInfo = {};
             var injector = {};
             var fn = function () {
-                serviceFactory.getAdapter(serviceInfo, injector);
+                factory.getAdapter(serviceInfo, injector);
             };
-            expect(fn).to.throw(/ServiceFactory could not find adapter/);
+            taste.expect(fn).to.throw(/ServiceFactory could not find adapter/);
         });
 
         it('should return a loaded simple adapter module', function() {
             var serviceInfo = {
-                adapterName: 'persist',
+                adapterName: 'backend',
                 adapterImpl: 'test',
                 resourceName: 'post'
             };
             var injector = {
-                rootDir: __dirname + '/../..',
-                servicesDir: 'examples',
+                rootDir: taste.fixturesDir,
+                servicesDir: 'services',
                 loadModule: function (modulePath) {
                     if (modulePath.indexOf('test') >= 0) {
                         return { one: 'one', two: 'two' };
@@ -237,19 +233,19 @@ describe('Unit tests for service.factory', function () {
                 }
             };
             var expected = { one: 'one', two: 'two' };
-            var adapter = serviceFactory.getAdapter(serviceInfo, injector);
+            var adapter = factory.getAdapter(serviceInfo, injector);
             adapter.should.deep.equal(expected);
         });
 
         it('should return an adapter with an override', function() {
             var serviceInfo = {
-                adapterName: 'search',
+                adapterName: 'repo',
                 adapterImpl: 'solr',
-                resourceName: 'post'
+                resourceName: 'blah'
             };
             var injector = {
-                rootDir: __dirname + '/../..',
-                servicesDir: 'examples',
+                rootDir: taste.fixturesDir,
+                servicesDir: 'services',
                 loadModule: function (modulePath) {
                     if (modulePath.indexOf('solr') >= 0) {
                         return { one: 'one', two: 'two' };
@@ -260,47 +256,52 @@ describe('Unit tests for service.factory', function () {
                 }
             };
             var expected = { one: 'one', two: 'override', three: 'three' };
-            var adapter = serviceFactory.getAdapter(serviceInfo, injector);
+            var adapter = factory.getAdapter(serviceInfo, injector);
             adapter.should.deep.equal(expected);
         });
     });
 
     describe('getFilters()', function () {
-        it('should return empty array if no filters', function() {
-            var expected = [];
-            var actual = serviceFactory.getFilters(null, null);
+        it('should return empty object if no filters', function() {
+            var injector = {
+                loadModule: function () { return null; }
+            };
+            var expected = {};
+            var actual = factory.getFilters({}, injector);
             actual.should.deep.equal(expected);
         });
-        
+
+        /*
         it('should load a couple fake filters and return them', function() {
-            var filterPaths = ['one', 'two'];
+            var serviceInfo = {};
+            var data = { something: true };
             var injector = {
                 servicesDir: 'services',
-                loadModule: function (path) {
-                    return path;
+                loadModule: function () {
+                    return data;
                 }
             };
-            var expected = ['services/one', 'services/two'];
-            var actual = serviceFactory.getFilters(filterPaths, injector);
-            actual.should.deep.equal(expected);
+            var actual = factory.getFilters(serviceInfo, injector);
+            actual.should.deep.equal(data);
         });
+        */
     });
 
     describe('create', function () {
         it('should return an item from cache if it exists', function() {
             var serviceName = 'someService';
             var data = { something: true };
-            serviceFactory.cache[serviceName] = data;
-            var service = serviceFactory.create(serviceName, [], {});
+            factory.cache[serviceName] = data;
+            var service = factory.create(serviceName, [], {});
             service.should.deep.equal(data);
         });
 
-        it('should load the postPersistService', function() {
-            var serviceName = 'postPersistService';
+        it('should load the blahBackendService', function() {
+            var serviceName = 'blahBackendService';
             var injector = {
-                adapterMap: { persist: 'test' },
-                rootDir: __dirname + '/../..',
-                servicesDir: 'examples',
+                adapterMap: { backend: 'test' },
+                rootDir: taste.fixturesDir,
+                servicesDir: 'services',
                 loadModule: function () {
                     return {
                         methods: ['one', 'two']
@@ -308,7 +309,7 @@ describe('Unit tests for service.factory', function () {
                 }
             };
             var expected = {};
-            var actual = serviceFactory.create(serviceName, [], injector);
+            var actual = factory.create(serviceName, [], injector);
             actual.should.deep.equal(expected);
         });
     });

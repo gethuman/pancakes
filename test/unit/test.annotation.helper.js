@@ -4,17 +4,17 @@
  *
  * Unit test for the annotation helper
  */
-var chai = require('chai');
-var should = chai.should();
-var expect = chai.expect;
-var annotationHelper = require('../lib/annotation.helper');
+var taste = require('../taste');
+var name = 'annotation.helper';
+var annotationHelper = taste.target(name);
 
-describe('Unit tests for annotation.helper', function () {
+describe('Unit tests for ' + name, function () {
+
     describe('getModuleInfo()', function () {
         it('should return null if no annotation found', function() {
             var flapjack = function () {};
             var actual = annotationHelper.getModuleInfo(flapjack);
-            expect(actual).to.be.null;
+            taste.expect(actual).to.be.null;
         });
 
         it('should throw an error if there is invalid JSON', function() {
@@ -24,7 +24,7 @@ describe('Unit tests for annotation.helper', function () {
             var fn = function () {
                 annotationHelper.getModuleInfo(flapjack);
             };
-            expect(fn).to.throw(SyntaxError);
+            taste.expect(fn).to.throw(SyntaxError);
         });
 
         it('should return back parsed JSON in annotation', function() {
@@ -33,7 +33,7 @@ describe('Unit tests for annotation.helper', function () {
             };
             var expected = { something: { one: 'two' }};
             var actual = annotationHelper.getModuleInfo(flapjack);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
     });
@@ -45,7 +45,7 @@ describe('Unit tests for annotation.helper', function () {
             };
             var expected = { one: 'two' };
             var actual = annotationHelper.getParamMap('something', flapjack);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
     });
@@ -57,7 +57,7 @@ describe('Unit tests for annotation.helper', function () {
             };
             var expected = { one: 'two' };
             var actual = annotationHelper.getServerParamMap(flapjack);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
     });
@@ -69,7 +69,7 @@ describe('Unit tests for annotation.helper', function () {
             };
             var expected = { one: 'two' };
             var actual = annotationHelper.getClientParamMap(flapjack);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
     });
@@ -79,7 +79,7 @@ describe('Unit tests for annotation.helper', function () {
             var flapjack = function (one, two, three) {};
             var expected = ['one', 'two', 'three'];
             var actual = annotationHelper.getParameters(flapjack);
-            expect(actual).to.exist;
+            taste.expect(actual).to.exist;
             actual.should.deep.equal(expected);
         });
     });

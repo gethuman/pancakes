@@ -28,6 +28,7 @@
     "sinon": "^1.8.2",
     "sinon-chai": "^2.5.0",
     "mocha-as-promised": "^2.0.0",
-    "chai-as-promised": "^4.1.0"
+    "chai-as-promised": "^4.1.0",
+    "blanket": "^1.1.6"
   }
 }

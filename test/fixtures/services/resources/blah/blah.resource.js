@@ -6,12 +6,12 @@
  */
 module.exports = function () {
     return {
-        name: 'posts',
+        name: 'blah',
         methods: ['create', 'update', 'remove', 'find'],
         adapters: {
-            api:        'persist',
-            webserver:  'api',
-            batch:      'persist'
+            api:        'backend',
+            webserver:  'repo',
+            batch:      'backend'
         }
     };
 };

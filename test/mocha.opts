@@ -6,3 +6,4 @@
 --bail
 --reporter progress
 --timeout 10000
+--require test/setup
