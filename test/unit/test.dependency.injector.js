@@ -12,7 +12,10 @@ var injector;
 describe('Unit tests for ' + name, function () {
 
     beforeEach(function () {
-        injector = new Injector({ rootDir: taste.fixturesDir });
+        injector = new Injector({
+            rootDir: taste.fixturesDir,
+            preload: 'flapjacks'
+        });
     });
 
     describe('loadMappings()', function () {
@@ -65,6 +68,12 @@ describe('Unit tests for ' + name, function () {
             actual.should.deep.equal(expected);
         });
 
+        it('should load a simple module from the param name', function () {
+            var expected = require('../fixtures/flapjacks/simple.module')();
+            var actual = injector.loadModule('simpleModule');
+            actual.should.deep.equal(expected);
+        });
+
         it('should load a param module with annotation mapping', function () {
             var expected = require('../fixtures/flapjacks/simple.module')();
             var actual = injector.loadModule('flapjacks/annotation.module');
@@ -92,7 +101,8 @@ describe('Unit tests for ' + name, function () {
             taste.should.exist(actual.create);
 
             var data = { something: 'blah' };
-            var promise = actual.create(data);
+            var req = { data: data };
+            var promise = actual.create(req);
 
             taste.all([
                 promise.should.be.fulfilled,

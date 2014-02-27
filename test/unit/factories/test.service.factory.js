@@ -54,37 +54,40 @@ describe('Unit tests for ' + name, function () {
     describe('putItAllTogether()', function () {
         it('should throw an error if there are no methods', function () {
             var fn = function () {
-                factory.putItAllTogether({ name: 'blah' }, {}, {}, {});
+                factory.putItAllTogether({}, { name: 'blah' }, {}, {}, {});
             };
             taste.expect(fn).to.throw(/Resource blah has no methods/);
         });
         
         it('should return an empty object if the adapter has no matching methods', function () {
-            var resource = { name: 'blah', methods: ['one', 'two'] };
+            var serviceInfo = { adapterName: 'somethin' };
+            var resource = { name: 'blah', methods: { somethin: ['one', 'two'] } };
             var adapter = {};
-            var service = factory.putItAllTogether(resource, adapter, null, null);
+            var service = factory.putItAllTogether(serviceInfo, resource, adapter, null, null);
             service.should.deep.equal({});
         });
         
         it('should return an object with all the matching adapter methods (no filters)', function (done) {
-            var resource = { name: 'blah', methods: ['one', 'two'] };
+            var serviceInfo = { adapterName: 'somethin' };
+            var resource = { name: 'blah', methods: { somethin: ['one', 'two'] } };
             var data = 'hello, world';
-            var adapter = { one: function () { return data; } };
-            var service = factory.putItAllTogether(resource, adapter, null, null);
-            taste.should.exist(service);
-            taste.should.exist(service.one);
+            var adapter = { one: function () { return { resource: resource, data: data }; } };
+            var service = factory.putItAllTogether(serviceInfo, resource, adapter, null, null);
+            taste.should.exist(service, 'Service does not exist');
+            taste.should.exist(service.one, 'Service does not have a method called one');
             service.one.should.be.a('function');
 
             var promise = service.one();
 
             taste.all([
                 promise.should.be.fulfilled,
-                promise.should.eventually.equal(data)
+                promise.should.eventually.deep.equal(data)
             ], done);
         });
 
         it('should return an object with all the matching adapter methods (with filters)', function (done) {
-            var resource = { name: 'blah', methods: ['one', 'two'] };
+            var serviceInfo = { adapterName: 'somethin' };
+            var resource = { name: 'blah', methods: { somethin: ['one', 'two'] } };
             var expected = 'start|something|another|adapter|lastOne';
             var filters = {
                 beforeFilters: [
@@ -94,17 +97,29 @@ describe('Unit tests for ' + name, function () {
                 afterFilters: [
                     { name: 'lastOne', all: true }
                 ],
-                applySomething: function (input) { return new Q(input + '|something'); },
-                applyAnother: function (input) { return new Q(input + '|another'); },
-                lastOne: function (input) { return new Q(input + '|lastOne'); }
+                applySomething: function (req) {
+                    req.data += '|something';
+                    return new Q(req);
+                },
+                applyAnother: function (req) {
+                    req.data += '|another';
+                    return new Q(req);
+                },
+                lastOne: function (res) {
+                    res.data += '|lastOne';
+                    return new Q(res);
+                }
             };
-            var adapter = { one: function (input) { return new Q(input + '|adapter'); } };
-            var service = factory.putItAllTogether(resource, adapter, filters);
-            taste.should.exist(service);
-            taste.should.exist(service.one);
+            var adapter = { one: function (req) {
+                req.data += '|adapter';
+                return new Q(req);
+            }};
+            var service = factory.putItAllTogether(serviceInfo, resource, adapter, filters);
+            taste.should.exist(service, 'Service does not exist');
+            taste.should.exist(service.one, 'Service does not have a method called one');
             service.one.should.be.a('function');
 
-            var promise = service.one('start');
+            var promise = service.one({ data: 'start' });
 
             taste.all([
                 promise.should.be.fulfilled,
@@ -153,10 +168,8 @@ describe('Unit tests for ' + name, function () {
     
     describe('getResource()', function () {
         it('should throw error if resource not found', function () {
-            var serviceInfo = {};
-            var injector = {};
             var fn = function () {
-                factory.getResource(serviceInfo, injector);
+                factory.getResource({}, [], {});
             };
             taste.expect(fn).to.throw(/ServiceFactory could not find resource/);
         });
@@ -169,7 +182,7 @@ describe('Unit tests for ' + name, function () {
                 loadModule: taste.spy()
             };
 
-            factory.getResource(serviceInfo, injector);
+            factory.getResource(serviceInfo, [], injector);
             injector.loadModule.should.have.been.calledWith('services/resources/blah/blah.resource');
         });
     });
@@ -206,10 +219,8 @@ describe('Unit tests for ' + name, function () {
 
     describe('getAdapter()', function () {
         it('should throw an error if the file does not exist', function () {
-            var serviceInfo = {};
-            var injector = {};
             var fn = function () {
-                factory.getAdapter(serviceInfo, injector);
+                factory.getAdapter({}, [], {});
             };
             taste.expect(fn).to.throw(/ServiceFactory could not find adapter/);
         });
@@ -233,7 +244,7 @@ describe('Unit tests for ' + name, function () {
                 }
             };
             var expected = { one: 'one', two: 'two' };
-            var adapter = factory.getAdapter(serviceInfo, injector);
+            var adapter = factory.getAdapter(serviceInfo, [], injector);
             adapter.should.deep.equal(expected);
         });
 
@@ -256,7 +267,7 @@ describe('Unit tests for ' + name, function () {
                 }
             };
             var expected = { one: 'one', two: 'override', three: 'three' };
-            var adapter = factory.getAdapter(serviceInfo, injector);
+            var adapter = factory.getAdapter(serviceInfo, [], injector);
             adapter.should.deep.equal(expected);
         });
     });
@@ -267,7 +278,7 @@ describe('Unit tests for ' + name, function () {
                 loadModule: function () { return null; }
             };
             var expected = {};
-            var actual = factory.getFilters({}, injector);
+            var actual = factory.getFilters({}, [], injector);
             actual.should.deep.equal(expected);
         });
 
@@ -284,7 +295,7 @@ describe('Unit tests for ' + name, function () {
                     return data;
                 }
             };
-            var actual = factory.getFilters(serviceInfo, injector);
+            var actual = factory.getFilters(serviceInfo, [], injector);
             actual.should.deep.equal(data);
         });
     });
@@ -306,7 +317,7 @@ describe('Unit tests for ' + name, function () {
                 servicesDir: 'services',
                 loadModule: function () {
                     return {
-                        methods: ['one', 'two']
+                        methods: { backend: ['one', 'two'] }
                     };
                 }
             };
