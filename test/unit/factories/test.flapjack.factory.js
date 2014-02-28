@@ -6,17 +6,19 @@
  */
 var taste = require('../../taste');
 var name = 'factories/flapjack.factory';
-var factory = taste.target(name);
+var Factory = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
     
     describe('isCandidate()', function () {
         it('should return false if there is NOT a slash in the module path', function () {
+            var factory = new Factory({});
             var actual = factory.isCandidate('something');
             actual.should.equal(false);
         });
 
         it('should return true if there is a slash', function () {
+            var factory = new Factory({});
             var actual = factory.isCandidate('something/another');
             actual.should.equal(true);
         });
@@ -24,9 +26,10 @@ describe('Unit tests for ' + name, function () {
 
     describe('injectFlapjack()', function () {
         it('should simply call the flapjack with no params', function () {
+            var factory = new Factory({});
             var data = 'hello';
             var flapjack = function () { return data; };
-            var actual = factory.injectFlapjack(flapjack, null, {});
+            var actual = factory.injectFlapjack(flapjack, null);
             taste.should.exist(actual);
             actual.should.equal(data);
         });
@@ -40,7 +43,9 @@ describe('Unit tests for ' + name, function () {
                     return data;
                 }
             };
-            var actual = factory.injectFlapjack(flapjack, null, injector);
+
+            var factory = new Factory(injector);
+            var actual = factory.injectFlapjack(flapjack, null);
             taste.should.exist(actual);
             actual.should.equal(expected);
         });
@@ -56,7 +61,9 @@ describe('Unit tests for ' + name, function () {
                     foo: data
                 }
             };
-            var actual = factory.injectFlapjack(flapjack, null, injector);
+
+            var factory = new Factory(injector);
+            var actual = factory.injectFlapjack(flapjack, null);
             taste.should.exist(actual);
             actual.should.equal(data);
         });
@@ -72,7 +79,9 @@ describe('Unit tests for ' + name, function () {
                     return param;
                 }
             };
-            var actual = factory.injectFlapjack(flapjack, null, injector);
+
+            var factory = new Factory(injector);
+            var actual = factory.injectFlapjack(flapjack, null);
             taste.should.exist(actual);
             actual.should.equal(data);
         });
@@ -83,15 +92,18 @@ describe('Unit tests for ' + name, function () {
             var modulePath = 'foo';
             var data = 'hello';
 
+            var factory = new Factory(null);
             factory.cache[modulePath] = data;
-            var actual = factory.create(modulePath, null, null);
+
+            var actual = factory.create(modulePath, null);
             taste.should.exist(actual);
             actual.should.equal(data);
         });
 
         it('should throw an error if the file does not exist', function () {
+            var factory = new Factory({});
             var fn = function () {
-                factory.create('blah', null, {});
+                factory.create('blah', null);
             };
             taste.expect(fn).to.throw(/FlapjackFactory got invalid file path/);
         });
@@ -106,7 +118,9 @@ describe('Unit tests for ' + name, function () {
                     return parts[parts.length - 1];
                 }
             };
-            var actual = factory.create(data, [], injector);
+
+            var factory = new Factory(injector);
+            var actual = factory.create(data, []);
             taste.should.exist(actual);
             actual.should.equal(expected);
             factory.cache[data].should.equal(expected);
@@ -130,7 +144,9 @@ describe('Unit tests for ' + name, function () {
                     foo: 'something/foo'
                 }
             };
-            var actual = factory.create(data, [], injector);
+
+            var factory = new Factory(injector);
+            var actual = factory.create(data, []);
             taste.should.exist(actual);
             actual.should.equal(expected);
             factory.cache[data].should.equal(expected);

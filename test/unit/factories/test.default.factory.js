@@ -6,12 +6,13 @@
  */
 var taste = require('../../taste');
 var name = 'factories/default.factory';
-var defaultFactory = taste.target(name);
+var DefaultFactory = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
     describe('isCandidate()', function () {
         it('should aways return what is sent in', function () {
             var data = 'blah';
+            var defaultFactory = new DefaultFactory({});
             var actual = defaultFactory.isCandidate(data) || '';
             actual.should.equal(data);
         });
@@ -24,7 +25,8 @@ describe('Unit tests for ' + name, function () {
             };
             var modulePath = 'blah';
 
-            defaultFactory.create(modulePath, null, injector);
+            var defaultFactory = new DefaultFactory(injector);
+            defaultFactory.create(modulePath, null);
             injector.require.should.have.been.calledWith(modulePath);
         });
     });

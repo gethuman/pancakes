@@ -43,7 +43,11 @@ describe('Unit tests for ' + name, function () {
                 oneAnother: 'mappings/one.another',
                 two: 'mappings/two',
                 three: 'mappings/subdir/three',
-                four: 'mappings/subdir/four'
+                four: 'mappings/subdir/four',
+                OneAnother: 'mappings/one.another',
+                Two: 'mappings/two',
+                Three: 'mappings/subdir/three',
+                Four: 'mappings/subdir/four'
             };
             var actual = injector.loadMappings(taste.fixturesDir, [dir]);
             actual.should.deep.equal(expected);
@@ -55,7 +59,11 @@ describe('Unit tests for ' + name, function () {
                 oneAnother: 'mappings/one.another',
                 two: 'mappings/two',
                 three: 'mappings/subdir/three',
-                four: 'mappings/subdir/four'
+                four: 'mappings/subdir/four',
+                OneAnother: 'mappings/one.another',
+                Two: 'mappings/two',
+                Three: 'mappings/subdir/three',
+                Four: 'mappings/subdir/four'
             };
             var actual = injector.loadMappings(taste.fixturesDir, dir);
             actual.should.deep.equal(expected);

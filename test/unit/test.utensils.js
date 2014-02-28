@@ -22,10 +22,10 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
-    describe('getModuleName()', function () {
+    describe('getCamelCase()', function () {
         it('should return empty string if no path', function () {
             var expected = '';
-            var actual = utils.getModuleName();
+            var actual = utils.getCamelCase();
             taste.should.exist(actual);
             actual.should.equal(expected);
         });
@@ -33,7 +33,7 @@ describe('Unit tests for ' + name, function () {
         it('should get a simple all lower case name', function () {
             var path = 'something/blah.js';
             var expected = 'blah';
-            var actual = utils.getModuleName(path);
+            var actual = utils.getCamelCase(path);
             taste.should.exist(actual);
             actual.should.equal(expected);
         });
@@ -41,7 +41,7 @@ describe('Unit tests for ' + name, function () {
         it('should turn a dot notation name to camelCase', function () {
             var path = 'something/blah.boo.yeah.js';
             var expected = 'blahBooYeah';
-            var actual = utils.getModuleName(path);
+            var actual = utils.getCamelCase(path);
             taste.should.exist(actual);
             actual.should.equal(expected);
         });

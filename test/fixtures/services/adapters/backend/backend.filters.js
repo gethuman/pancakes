@@ -6,27 +6,30 @@
  */
 module.exports = function (Q) {
 
-    var beforeFilters = [
-        { name: 'in1', all: true },
-        { name: 'in2', all: true }
-    ];
+    var BackendFilters = function () {
+        this.beforeFilters = [
+            { name: 'in1', all: true },
+            { name: 'in2', all: true }
+        ];
 
-    var afterFilters = [
-        { name: 'out1', all: true },
-        { name: 'out2', all: true }
-    ];
-
-    var in1 = function (req) { return new Q(req); };
-    var in2 = function (req) { return new Q(req); };
-    var out1 = function (res) { return new Q(res); };
-    var out2 = function (res) { return new Q(res); };
-
-    return {
-        beforeFilters: beforeFilters,
-        afterFilters: afterFilters,
-        in1: in1,
-        in2: in2,
-        out1: out1,
-        out2: out2
+        this.afterFilters = [
+            { name: 'out1', all: true },
+            { name: 'out2', all: true }
+        ];
     };
+
+
+
+    BackendFilters.prototype.in1 = function (req) {
+        return new Q(req);
+    };
+
+    BackendFilters.prototype.in2 = function (req) {
+        return new Q(req);
+    };
+
+    BackendFilters.prototype.out1 = function (res) { return new Q(res); };
+    BackendFilters.prototype.out2 = function (res) { return new Q(res); };
+
+    return BackendFilters;
 };
