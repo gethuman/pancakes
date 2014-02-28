@@ -4,8 +4,8 @@
  *
  * Unit tests for the main pancakes module
  */
-var taste = require('../taste');
 var name = 'pancakes';
+var taste = require('../taste');
 var pancakes = taste.target(name);
 
 describe('Unit tests for ' + name, function () {

@@ -38,37 +38,37 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
-    describe('getParamMap()', function () {
+    describe('getAliases()', function () {
         it('should get parameter map for given part', function () {
             var flapjack = function () {
                 // @module({ "something": { "one": "two" } })
             };
             var expected = { one: 'two' };
-            var actual = annotationHelper.getParamMap('something', flapjack);
+            var actual = annotationHelper.getAliases('something', flapjack);
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
     });
 
-    describe('getServerParamMap()', function () {
+    describe('getServerAliases()', function () {
         it('should get server parameter map', function () {
             var flapjack = function () {
                 // @module({ "server": { "one": "two" } })
             };
             var expected = { one: 'two' };
-            var actual = annotationHelper.getServerParamMap(flapjack);
+            var actual = annotationHelper.getServerAliases(flapjack);
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
     });
 
-    describe('getClientParamMap()', function () {
+    describe('getClientAliases()', function () {
         it('should get server parameter map', function () {
             var flapjack = function () {
                 // @module({ "client": { "one": "two" } })
             };
             var expected = { one: 'two' };
-            var actual = annotationHelper.getClientParamMap(flapjack);
+            var actual = annotationHelper.getClientAliases(flapjack);
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });

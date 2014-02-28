@@ -15,6 +15,9 @@ module.exports = function () {
             api:        'backend',
             webserver:  'repo',
             batch:      'backend'
+        },
+        params: {
+            create:     { optional: ['data'] }
         }
     };
 };

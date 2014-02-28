@@ -6,11 +6,11 @@
  */
 module.exports = function (Q) {
 
-    var create = function (req) {
+    var BackendAdapter = function () {};
+
+    BackendAdapter.prototype.create = function (req) {
         return new Q(req);
     };
 
-    return {
-        create: create
-    };
+    return BackendAdapter;
 };

@@ -14,7 +14,19 @@ describe('Unit tests for ' + name, function () {
     beforeEach(function () {
         injector = new Injector({
             rootDir: taste.fixturesDir,
-            preload: 'flapjacks'
+            preload: 'flapjacks',
+            adapterMap: {
+                backend: 'test'
+            }
+        });
+    });
+
+    describe('constructor', function () {
+        it('should add short adapter names to alias list', function () {
+            taste.should.exist(injector.aliases, 'Aliases do not exist');
+            taste.should.exist(injector.aliases.testBackendAdapter, 'testBackendAdapter does not exist');
+            taste.should.exist(injector.aliases.BackendAdapter, 'backendAdapter does not exist');
+            injector.aliases.testBackendAdapter.should.deep.equal(injector.aliases.BackendAdapter);
         });
     });
 
@@ -97,17 +109,13 @@ describe('Unit tests for ' + name, function () {
                 adapterMap: { backend: 'test', repo: 'solr' }
             });
             var actual = injector.loadModule('blahService');
-            taste.should.exist(actual);
-            taste.should.exist(actual.create);
+            taste.should.exist(actual, 'Nothing returned from blahService');
+            taste.should.exist(actual.create, 'No create method available');
 
             var data = { something: 'blah' };
             var req = { data: data };
             var promise = actual.create(req);
-
-            taste.all([
-                promise.should.be.fulfilled,
-                promise.should.eventually.deep.equal(data)
-            ], done);
+            taste.eventuallySame(promise, data, done);
         });
     });
 });

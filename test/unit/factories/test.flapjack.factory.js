@@ -52,7 +52,7 @@ describe('Unit tests for ' + name, function () {
                 loadModule: function (param) {
                     return param;
                 },
-                paramMap: {
+                aliases: {
                     foo: data
                 }
             };
@@ -126,7 +126,7 @@ describe('Unit tests for ' + name, function () {
                     var parts = path.split('/');
                     return parts[parts.length - 1];
                 },
-                paramMap: {
+                aliases: {
                     foo: 'something/foo'
                 }
             };

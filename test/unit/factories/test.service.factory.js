@@ -78,16 +78,12 @@ describe('Unit tests for ' + name, function () {
             service.one.should.be.a('function');
 
             var promise = service.one();
-
-            taste.all([
-                promise.should.be.fulfilled,
-                promise.should.eventually.deep.equal(data)
-            ], done);
+            taste.eventuallySame(promise, data, done);
         });
 
         it('should return an object with all the matching adapter methods (with filters)', function (done) {
             var serviceInfo = { adapterName: 'somethin' };
-            var resource = { name: 'blah', methods: { somethin: ['one', 'two'] } };
+            var resource = { name: 'blah', methods: { somethin: ['one', 'two'] }, params: { one: { optional: ['data'] }} };
             var expected = 'start|something|another|adapter|lastOne';
             var filters = {
                 beforeFilters: [
@@ -120,11 +116,7 @@ describe('Unit tests for ' + name, function () {
             service.one.should.be.a('function');
 
             var promise = service.one({ data: 'start' });
-
-            taste.all([
-                promise.should.be.fulfilled,
-                promise.should.eventually.equal(expected)
-            ], done);
+            taste.eventuallySame(promise, expected, done);
         });
     });
 
@@ -220,7 +212,7 @@ describe('Unit tests for ' + name, function () {
     describe('getAdapter()', function () {
         it('should throw an error if the file does not exist', function () {
             var fn = function () {
-                factory.getAdapter({}, [], {});
+                factory.getAdapter({}, {}, [], {});
             };
             taste.expect(fn).to.throw(/ServiceFactory could not find adapter/);
         });
@@ -236,15 +228,15 @@ describe('Unit tests for ' + name, function () {
                 servicesDir: 'services',
                 loadModule: function (modulePath) {
                     if (modulePath.indexOf('test') >= 0) {
-                        return { one: 'one', two: 'two' };
+                        return function () { this.one = 'one'; this.two = 'two'; };
                     }
                     else {
-                        return { two: 'override', three: 'three' };
+                        return function () { this.two = 'override'; this.three = 'three'; };
                     }
                 }
             };
-            var expected = { one: 'one', two: 'two' };
-            var adapter = factory.getAdapter(serviceInfo, [], injector);
+            var expected = new function () { this.one = 'one'; this.two = 'two'; };
+            var adapter = factory.getAdapter(serviceInfo, {}, [], injector);
             adapter.should.deep.equal(expected);
         });
 
@@ -259,15 +251,15 @@ describe('Unit tests for ' + name, function () {
                 servicesDir: 'services',
                 loadModule: function (modulePath) {
                     if (modulePath.indexOf('solr') >= 0) {
-                        return { one: 'one', two: 'two' };
+                        return function () { this.one = 'one'; this.two = 'two'; };
                     }
                     else {
-                        return { two: 'override', three: 'three' };
+                        return function () { this.two = 'override'; this.three = 'three'; };
                     }
                 }
             };
-            var expected = { one: 'one', two: 'override', three: 'three' };
-            var adapter = factory.getAdapter(serviceInfo, [], injector);
+            var expected = new function () { this.two = 'override'; this.three = 'three' };
+            var adapter = factory.getAdapter(serviceInfo, {}, [], injector);
             adapter.should.deep.equal(expected);
         });
     });
@@ -315,10 +307,15 @@ describe('Unit tests for ' + name, function () {
                 adapterMap: { backend: 'test' },
                 rootDir: taste.fixturesDir,
                 servicesDir: 'services',
-                loadModule: function () {
-                    return {
-                        methods: { backend: ['one', 'two'] }
-                    };
+                loadModule: function (name) {
+                    if (name.indexOf('blah.resource') >= 0) {
+                        return {
+                            methods: { backend: ['one', 'two'] }
+                        };
+                    }
+                    else {
+                        return function () { this.blah = 123; };
+                    }
                 }
             };
             var expected = {};
