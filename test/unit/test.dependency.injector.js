@@ -10,7 +10,6 @@ var Injector = taste.target(name);
 var injector;
 
 describe('Unit tests for ' + name, function () {
-
     beforeEach(function () {
         injector = new Injector({
             rootDir: taste.fixturesDir,
@@ -104,8 +103,7 @@ describe('Unit tests for ' + name, function () {
 
         it('should load blahService', function (done) {
             injector = new Injector({
-                rootDir: taste.fixturesDir,
-                servicesDir: 'services',
+                rootDir:    taste.fixturesDir,
                 adapterMap: { backend: 'test', repo: 'solr' }
             });
             var actual = injector.loadModule('blahService');

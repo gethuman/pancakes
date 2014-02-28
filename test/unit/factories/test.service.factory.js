@@ -198,14 +198,23 @@ describe('Unit tests for ' + name, function () {
             var adapterImpl = 'impl';
             var expectedName = 'backend';
             var expectedImpl = 'test';
-            var serviceInfo = { adapterName: adapterName, adapterImpl: adapterImpl };
+            var serviceInfo = {
+                resourceName: 'blah',
+                adapterName: adapterName,
+                adapterImpl: adapterImpl
+            };
             var resource = { adapters: { api: 'backend' } };
-            var adapterMap = { backend: 'test' };
-            var container = 'api';
+            var injector = {
+                adapterMap: { backend: 'test' },
+                container: 'api',
+                loadModule: taste.spy()
+            };
+            var expectedDefaultServiceName = 'blahBackendService';
 
-            factory.checkForDefaultAdapter(serviceInfo, resource, adapterMap, container);
+            factory.checkForDefaultAdapter(serviceInfo, resource, [], injector);
             serviceInfo.adapterName.should.equal(expectedName);
             serviceInfo.adapterImpl.should.equal(expectedImpl);
+            injector.loadModule.should.have.been.calledWith(expectedDefaultServiceName)
         });
     });
 
@@ -235,7 +244,8 @@ describe('Unit tests for ' + name, function () {
                     }
                 }
             };
-            var expected = new function () { this.one = 'one'; this.two = 'two'; };
+            var Something = function () { this.one = 'one'; this.two = 'two'; };
+            var expected = new Something();
             var adapter = factory.getAdapter(serviceInfo, {}, [], injector);
             adapter.should.deep.equal(expected);
         });
@@ -258,7 +268,8 @@ describe('Unit tests for ' + name, function () {
                     }
                 }
             };
-            var expected = new function () { this.two = 'override'; this.three = 'three' };
+            var Something = function () { this.two = 'override'; this.three = 'three'; };
+            var expected = new Something();
             var adapter = factory.getAdapter(serviceInfo, {}, [], injector);
             adapter.should.deep.equal(expected);
         });
