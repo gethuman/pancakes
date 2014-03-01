@@ -223,7 +223,7 @@ describe('Unit tests for ' + name, function () {
             factory.checkForDefaultAdapter(serviceInfo, resource, []);
             serviceInfo.adapterName.should.equal(expectedName);
             serviceInfo.adapterImpl.should.equal(expectedImpl);
-            injector.loadModule.should.have.been.calledWith(expectedDefaultServiceName)
+            injector.loadModule.should.have.been.calledWith(expectedDefaultServiceName);
         });
     });
 
@@ -303,17 +303,19 @@ describe('Unit tests for ' + name, function () {
                 adapterName: 'backend',
                 resourceName: 'blah'
             };
-            var data = { something: true };
+            var expected = { blah: 'yes' };
             var injector = {
                 rootDir: taste.fixturesDir,
                 servicesDir: 'services',
                 loadModule: function () {
-                    return data;
+                    return function () {
+                        this.blah = 'yes';
+                    };
                 }
             };
             var factory = new Factory(injector);
             var actual = factory.getFilters(serviceInfo, []);
-            actual.should.deep.equal(data);
+            actual.should.deep.equal(expected);
         });
 
         it('should load the resource level filter', function () {
@@ -326,7 +328,9 @@ describe('Unit tests for ' + name, function () {
                 rootDir: taste.fixturesDir,
                 servicesDir: 'services',
                 loadModule: function () {
-                    return data;
+                    return function () {
+                        this.something = true;
+                    };
                 }
             };
             var factory = new Factory(injector);

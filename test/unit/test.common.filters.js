@@ -50,10 +50,21 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('validateAdapterResponse()', function () {
-        it('should be rejected if no data or resource', function (done) {
+        it('should be rejected if nothing passed in', function (done) {
+            var promise = filters.validateAdapterResponse();
+            promise.should.be.rejectedWith(/Adapter resolved without returning anything/).and.notify(done);
+        });
+
+        it('should be rejected if no data', function (done) {
+            var res = { resource: 'blah' };
+            var promise = filters.validateAdapterResponse(res);
+            promise.should.be.rejectedWith(/Adapter did not set data in the response/).and.notify(done);
+        });
+
+        it('should be rejected if no resource', function (done) {
             var res = { data: 'blah' };
             var promise = filters.validateAdapterResponse(res);
-            promise.should.be.rejectedWith(/Adapter does not contain data/).and.notify(done);
+            promise.should.be.rejectedWith(/Adapter response does not have the resource/).and.notify(done);
         });
 
         it('should return the input data if valid', function (done) {
