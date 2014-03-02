@@ -202,6 +202,28 @@ module.exports = function (Post) {
 
 ```
 
+With all of these examples, the generated client side code should look exactly the same except for the initial
+function signature. For example, with Angular the Post example above would look like this:
+
+```javascript
+angular.module('someApp').factory(['Post', function (Post) {
+    return {
+        getQuestion: function (questionId) {
+            Post.findById({ _id: questionId })
+                .then(function (data) {
+                    var post = new Post(data);
+                    post.title = 'Updated title';
+                    post.save();
+                });
+        }
+    }
+}]);
+```
+
+While the server side 'Post' object wouldn't exist anywhere on the file system and is virtual, there would actually
+be a physical 'Post' object created for the client. The Pancakes build process would generate actual Angular
+objects for all the services and models.
+
 There are two fundamental type of services: Simple Services and Aggregation Services. Simple Services
 will only end up calling 1 adapter method. This should be the bulk of your transactions since the assumption is
 that your data has been heavily de-normalized. The Aggreation Services, however, call multiple other services.
@@ -273,7 +295,7 @@ over 400 - 500 lines. The goal is to eventually get the Pancakes framework and t
 
 Data propagation is the asychronous replication and transformation of data from one location to another. There may
 be some uses cases where specific code is needed, but for the large majority of situations the generic propagator
-could be used to sync data. The further details of this layer are TBD>
+could be used to sync data. The further details of this layer are TBD.
 
 ## Routing
 
