@@ -29,7 +29,7 @@ and would like to get involved. Hit me up on twitter @jeffwhelpley.
 This section goes over a couple examples of how pancakes is used to get you familar with what it is all about
 details for now to actually implement pancakes yourself will come later.
 
-## 1. Dependency Injection
+## Dependency Injection
 
 One of the core pieces of Pancakes is the Dependency Injector. All Pancakes code (event client side code) is
 written "node style" (i.e. module.exports) with one exception. Normally dependencies in Node.js are pulled in
