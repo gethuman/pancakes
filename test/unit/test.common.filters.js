@@ -43,7 +43,7 @@ describe('Unit tests for ' + name, function () {
             var resource = { params: { create: { required: ['data'], optional: ['some'] }}};
             var validateRequestParams = filters.validateRequestParams(resource, method);
             var req = { data: 'blah', some: 'another' };
-            var expected = { data: 'blah', some: 'another', method: method, resource: resource };
+            var expected = { data: 'blah', inputData: 'blah', some: 'another', method: method, resource: resource };
             var promise = validateRequestParams(req);
             taste.eventuallySame(promise, expected, done);
         });
