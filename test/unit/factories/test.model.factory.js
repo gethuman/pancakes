@@ -32,9 +32,9 @@ describe('Unit tests for ' + name, function () {
 
             var factory = new Factory(injector);
             taste.should.exist(factory, 'ModelFactory does not exist');
-            taste.should.exist(factory.resources, 'ModelFactory resources do not exist');
-            factory.resources.should.be.an('Object');
-            Object.keys(factory.resources).length.should.equal(3);
+            taste.should.exist(factory.resourceNames, 'ModelFactory resources do not exist');
+            factory.resourceNames.should.be.an('Object');
+            Object.keys(factory.resourceNames).length.should.equal(3);
         });
     });
 
