@@ -4,13 +4,18 @@
  *
  * Unit tests for the service factory
  */
-var Q = require('q');
-var taste = require('../../taste');
-var name = 'factories/service.factory';
+var Q       = require('q');
+var taste   = require('../../taste');
+var name    = 'factories/service.factory';
 var Factory = taste.target(name);
+var bus     = taste.target('event.bus');
 
 describe('Unit tests for ' + name, function () {
-    
+
+    afterEach(function () {
+        bus.removeAllListeners();
+    });
+
     describe('isCandidate()', function () {
         var factory = new Factory({});
 
@@ -227,6 +232,30 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
+    describe('addMethodEmitters()', function () {
+        it('should add event emitters to methods', function (done) {
+            var serviceInfo = { resourceName: 'resrc', adapterName: 'adptr' };
+            var resource = { name: 'resrc', methods: { adptr: ['blah'] }};
+            var adapter = {
+                blah: function (input) {
+                    return new Q(input + 'yo');
+                }
+            };
+
+            var input = 'something';
+            var expectedData = input + 'yo';
+            bus.on('resrc.adptr.blah', function (eventData) {
+                taste.should.exist(eventData);
+                eventData.payload.should.equal(expectedData);
+                done();
+            });
+
+            var factory = new Factory({});
+            factory.addMethodEmitters(serviceInfo, resource, adapter);
+            adapter.blah(input);
+        });
+    });
+
     describe('getAdapter()', function () {
         it('should throw an error if the file does not exist', function () {
             var factory = new Factory({});
@@ -257,7 +286,7 @@ describe('Unit tests for ' + name, function () {
             var Something = function () { this.one = 'one'; this.two = 'two'; };
             var expected = new Something();
             var factory = new Factory(injector);
-            var adapter = factory.getAdapter(serviceInfo, {}, []);
+            var adapter = factory.getAdapter(serviceInfo, { methods: {} }, []);
             adapter.should.deep.equal(expected);
         });
 
@@ -282,7 +311,7 @@ describe('Unit tests for ' + name, function () {
             var Something = function () { this.two = 'override'; this.three = 'three'; };
             var expected = new Something();
             var factory = new Factory(injector);
-            var adapter = factory.getAdapter(serviceInfo, {}, []);
+            var adapter = factory.getAdapter(serviceInfo, { methods: {} }, []);
             adapter.should.deep.equal(expected);
         });
     });

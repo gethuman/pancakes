@@ -5,5 +5,5 @@
 --recursive
 --bail
 --reporter progress
---timeout 10000
+--timeout 5000
 --require test/setup
