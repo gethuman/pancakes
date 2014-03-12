@@ -10,12 +10,25 @@ var annotationHelper = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
 
-    describe('getModuleInfo()', function () {
+    describe('getAnnotationInfo()', function () {
         it('should return null if no annotation found', function () {
-            var flapjack = function () {};
-            var actual = annotationHelper.getModuleInfo(flapjack);
+            var fn = function () {};
+            var actual = annotationHelper.getAnnotationInfo('module', fn);
             taste.should.not.exist(actual);
         });
+
+        it('should return an array', function () {
+            var fn = function () {
+                // @something(["one", "two", "three"])
+            };
+            var expected = ['one', 'two', 'three'];
+            var actual = annotationHelper.getAnnotationInfo('something', fn, true);
+            taste.should.exist(actual);
+            actual.should.deep.equal(expected);
+        });
+    });
+
+    describe('getModuleInfo()', function () {
 
         it('should throw an error if there is invalid JSON', function () {
             var flapjack = function () {
