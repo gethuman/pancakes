@@ -121,7 +121,11 @@ describe('Unit tests for ' + name, function () {
             var data = { something: 'blah' };
             var req = { data: data };
             var promise = actual.create(req);
-            taste.eventuallySame(promise, data, done);
+
+            taste.all([
+                promise.should.be.fulfilled,
+                promise.should.eventually.have.property('data').that.deep.equals(data)
+            ], done);
         });
     });
 });

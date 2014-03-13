@@ -182,13 +182,18 @@ describe('Unit tests for ' + name, function () {
             service.one.should.be.a('function');
 
             var promise = service.one();
-            taste.eventuallySame(promise, data, done);
+            taste.eventuallySame(promise, { resource: resource, data: data }, done);
         });
 
         it('should return an object with all the matching adapter methods (with filters)', function (done) {
             var serviceInfo = { adapterName: 'somethin' };
             var resource = { name: 'blah', methods: { somethin: ['one', 'two'] }, params: { one: { optional: ['data'] }} };
-            var expected = 'start|something|another|adapter|lastOne';
+            var expected = {
+                resource: resource,
+                inputData: 'start',
+                method: 'one',
+                data: 'start|something|another|adapter|lastOne'
+            };
 
             factory.filterCache = {
                 applySomething: function (req) {
