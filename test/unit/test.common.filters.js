@@ -10,6 +10,27 @@ var taste = require('../taste');
 var filters = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
+    describe('parseIfJson()', function () {
+        it('should return back a normal string', function () {
+            var data = 'something';
+            var actual = filters.parseIfJson(data);
+            actual.should.equal(data);
+        });
+
+        it('should return back a normal object', function () {
+            var data = { some: 'obj' };
+            var actual = filters.parseIfJson(data);
+            actual.should.deep.equal(data);
+        });
+
+        it('should parse JSON in a string to an object', function () {
+            var input = '{ "some": "thing" } ';
+            var expected = { some: 'thing' };
+            var actual = filters.parseIfJson(input);
+            actual.should.deep.equal(expected);
+        });
+    });
+
     describe('validateRequestParams()', function () {
         it('should return just the resource and method if no params listed', function (done) {
             var method = 'test';
@@ -71,14 +92,6 @@ describe('Unit tests for ' + name, function () {
             var res = {data: 'blah', resource: {} };
             var promise = filters.validateAdapterResponse(res);
             taste.eventuallySame(promise, res, done);
-        });
-    });
-
-    describe('convertResponseToData()', function () {
-        it('should return data if it exists', function (done) {
-            var res = { data: { something: true } };
-            var promise = filters.convertResponseToData(res);
-            taste.eventuallySame(promise, res.data, done);
         });
     });
 });

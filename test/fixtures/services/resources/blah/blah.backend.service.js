@@ -8,11 +8,13 @@
 var Q = require('q');
 
 module.exports = function () {
-    var BlahOverride = function () {};
+    var BlahService = function () {
+        this.blah = 123;
+    };
 
-    BlahOverride.prototype.create = function (req) {
+    BlahService.prototype.create = function (req) {
         return new Q(req);
     };
 
-    return BlahOverride;
+    return BlahService;
 };

@@ -115,6 +115,7 @@ describe('Unit tests for ' + name, function () {
                 adapterMap: { backend: 'test', repo: 'solr' }
             });
             var actual = injector.loadModule('blahService');
+
             taste.should.exist(actual, 'Nothing returned from blahService');
             taste.should.exist(actual.create, 'No create method available');
 
