@@ -60,5 +60,4 @@ describe('Unit tests for ' + name, function () {
 
         eventBus.emit('error', data);
     });
-
 });
