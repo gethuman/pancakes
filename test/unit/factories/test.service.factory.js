@@ -234,7 +234,7 @@ describe('Unit tests for ' + name, function () {
         it('should set adapter and service for blahService', function () {
             var serviceName = 'blahService';
             var adapterMap = { service: 'generic' };
-            var expected = { adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah' };
+            var expected = { serviceName: 'blahService', adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah' };
             var actual = factory.getServiceInfo(serviceName, adapterMap);
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
@@ -243,7 +243,7 @@ describe('Unit tests for ' + name, function () {
         it('should set adapter and service for blahYoService', function () {
             var serviceName = 'blahYoService';
             var adapterMap = { service: 'generic' };
-            var expected = { adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah.yo' };
+            var expected = { serviceName: 'blahYoService', adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah.yo' };
             var actual = factory.getServiceInfo(serviceName, adapterMap);
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
@@ -252,7 +252,7 @@ describe('Unit tests for ' + name, function () {
         it('should set adapter and service for blahBackendService', function () {
             var serviceName = 'blahBackendService';
             var adapterMap = { backend: 'test' };
-            var expected = { adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah' };
+            var expected = { serviceName: 'blahBackendService', adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah' };
             var actual = factory.getServiceInfo(serviceName, adapterMap);
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
@@ -261,7 +261,7 @@ describe('Unit tests for ' + name, function () {
         it('should set adapter and service for blahAnotherBackendService', function () {
             var serviceName = 'blahAnotherBackendService';
             var adapterMap = { backend: 'test' };
-            var expected = { adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah.another' };
+            var expected = { serviceName: 'blahAnotherBackendService', adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah.another' };
             var actual = factory.getServiceInfo(serviceName, adapterMap);
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
@@ -274,7 +274,7 @@ describe('Unit tests for ' + name, function () {
             var fn = function () {
                 factory.getResource({}, []);
             };
-            taste.expect(fn).to.throw(/ServiceFactory could not find resource/);
+            taste.expect(fn).to.throw(/Could not find resource file/);
         });
 
         it('should load the resource module if it is valid', function () {
@@ -288,45 +288,6 @@ describe('Unit tests for ' + name, function () {
             var factory = new Factory(injector);
             factory.getResource(serviceInfo, []);
             injector.loadModule.should.have.been.calledWith('services/resources/blah/blah.resource');
-        });
-    });
-
-    describe('checkForDefaultAdapter()', function () {
-        it('should not do anything if no resource info', function () {
-            var adapterName = 'blah';
-            var adapterImpl = 'impl';
-            var serviceInfo = { adapterName: adapterName, adapterImpl: adapterImpl };
-            var resource = {};
-            var adapterMap = {};
-            var factory = new Factory({});
-            factory.checkForDefaultAdapter(serviceInfo, resource, adapterMap);
-            serviceInfo.adapterName.should.equal(adapterName);
-            serviceInfo.adapterImpl.should.equal(adapterImpl);
-        });
-
-        it('should change the adapter name if a service and default there', function () {
-            var adapterName = 'service';
-            var adapterImpl = 'impl';
-            var expectedName = 'backend';
-            var expectedImpl = 'test';
-            var serviceInfo = {
-                resourceName: 'blah',
-                adapterName: adapterName,
-                adapterImpl: adapterImpl
-            };
-            var resource = { adapters: { api: 'backend' } };
-            var injector = {
-                adapterMap: { backend: 'test' },
-                container: 'api',
-                loadModule: taste.spy()
-            };
-            var expectedDefaultServiceName = 'blahBackendService';
-
-            var factory = new Factory(injector);
-            factory.checkForDefaultAdapter(serviceInfo, resource, []);
-            serviceInfo.adapterName.should.equal(expectedName);
-            serviceInfo.adapterImpl.should.equal(expectedImpl);
-            injector.loadModule.should.have.been.calledWith(expectedDefaultServiceName);
         });
     });
 

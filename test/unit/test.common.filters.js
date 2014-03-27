@@ -47,7 +47,7 @@ describe('Unit tests for ' + name, function () {
             var validateRequestParams = filters.validateRequestParams(resource, method);
             var req = { data: 'blah' };
             var promise = validateRequestParams(req);
-            promise.should.be.rejectedWith(/Missing zzz/).and.notify(done);
+            promise.should.be.rejectedWith(/create missing zzz/).and.notify(done);
         });
 
         it('should be rejected if has a value in the request that is not valid', function (done) {
@@ -67,31 +67,6 @@ describe('Unit tests for ' + name, function () {
             var expected = { data: 'blah', inputData: 'blah', some: 'another', method: method, resource: resource };
             var promise = validateRequestParams(req);
             taste.eventuallySame(promise, expected, done);
-        });
-    });
-
-    describe('validateAdapterResponse()', function () {
-        it('should be rejected if nothing passed in', function (done) {
-            var promise = filters.validateAdapterResponse();
-            promise.should.be.rejectedWith(/Adapter resolved without returning anything/).and.notify(done);
-        });
-
-        it('should be rejected if no data', function (done) {
-            var res = { resource: 'blah' };
-            var promise = filters.validateAdapterResponse(res);
-            promise.should.be.rejectedWith(/Adapter did not set data in the response/).and.notify(done);
-        });
-
-        it('should be rejected if no resource', function (done) {
-            var res = { data: 'blah' };
-            var promise = filters.validateAdapterResponse(res);
-            promise.should.be.rejectedWith(/Adapter response does not have the resource/).and.notify(done);
-        });
-
-        it('should return the input data if valid', function (done) {
-            var res = {data: 'blah', resource: {} };
-            var promise = filters.validateAdapterResponse(res);
-            taste.eventuallySame(promise, res, done);
         });
     });
 });
