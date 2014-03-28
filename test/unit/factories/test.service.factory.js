@@ -11,50 +11,75 @@ var Factory = taste.target(name);
 var bus     = taste.target('event.bus');
 
 describe('Unit tests for ' + name, function () {
-    describe('isCandidate()', function () {
-        var factory = new Factory({});
 
-        it('should return false if there is a slash', function () {
-            var actual = factory.isCandidate('something/foo');
-            actual.should.equal(false);
-        });
-        
-        it('should return false if the name does not have Service', function () {
-            var actual = factory.isCandidate('somethinyo');
-            actual.should.equal(false);
-        });
-        
-        it('should return true if there is no slash and the name contains Service', function () {
-            var actual = factory.isCandidate('someService');
-            actual.should.equal(true);
-        });
-    });
-    
-    describe('getServiceMethod()', function () {
-        it('should return a function that returns the end of a promise chain', function (done) {
-            var calls = [
-                function (input) {
-                    return new Q(input + '|one');
-                },
-                function (input) {
-                    return new Q(input + '|two');
-                }
-            ];
+    describe('parseIfJson()', function () {
+        it('should return back a normal string', function () {
+            var data = 'something';
             var factory = new Factory({});
-            var serviceMethod = factory.getServiceMethod(calls);
-            serviceMethod.should.be.a('function');
+            var actual = factory.parseIfJson(data);
+            actual.should.equal(data);
+        });
 
-            var expected = 'start|one|two';
-            var promise = serviceMethod('start');
+        it('should return back a normal object', function () {
+            var data = { some: 'obj' };
+            var factory = new Factory({});
+            var actual = factory.parseIfJson(data);
+            actual.should.deep.equal(data);
+        });
 
-            taste.all([
-                promise.should.be.fulfilled,
-                promise.should.eventually.equal(expected)
-            ], done);
+        it('should parse JSON in a string to an object', function () {
+            var input = '{ "some": "thing" } ';
+            var expected = { some: 'thing' };
+            var factory = new Factory({});
+            var actual = factory.parseIfJson(input);
+            actual.should.deep.equal(expected);
         });
     });
-    
-    describe('addEventEmitter()', function () {
+
+    describe('validateRequestParams()', function () {
+        it('should return an empty object if no params sent in', function () {
+            var method = 'test';
+            var resource = { test: true };
+            var factory = new Factory({});
+            var actual = factory.validateRequestParams(null, resource, method);
+            var expected = {};
+            actual.should.deep.equal(expected);
+        });
+
+        it('should be rejected if missing a required param', function () {
+            var method = 'create';
+            var resource = { params: { create: { required: ['zzz'] }}};
+            var factory = new Factory({});
+            var req = { data: 'blah' };
+            var fn = function () {
+                factory.validateRequestParams(req, resource, method);
+            };
+            taste.expect(fn).to.throw(/create missing zzz/);
+        });
+
+        it('should be rejected if has a value in the request that is not valid', function () {
+            var method = 'create';
+            var resource = {};
+            var factory = new Factory({});
+            var req = { data: 'blah' };
+            var fn = function () {
+                factory.validateRequestParams(req, resource, method);
+            };
+            taste.expect(fn).to.throw(/data is not allowed/);
+        });
+
+        it('should return back data if all valid', function () {
+            var method = 'create';
+            var resource = { params: { create: { required: ['data'], optional: ['some'] }}};
+            var factory = new Factory({});
+            var req = { data: 'blah', some: 'another' };
+            var actual = factory.validateRequestParams(req, resource, method);
+            var expected = { data: 'blah', some: 'another' };
+            actual.should.deep.equal(expected);
+        });
+    });
+
+    describe('emit()', function () {
         var oldLog;
 
         before(function () {
@@ -71,223 +96,107 @@ describe('Unit tests for ' + name, function () {
         });
 
         it('should add an event for the event base', function (done) {
-            var calls = [];
             var eventNameBase = { resource: 'src', adapter: 'adptr', method: 'meth' };
             var factory = new Factory({});
-            factory.addEventEmitter(calls, eventNameBase, null);
+            var req = { hello: 'world' };
+            var expected = { hello: 'world' };
 
-            var data = { hello: 'world' };
-            var expected = { data: data, resource: 'srcResource' };
             bus.on('src.adptr.meth', function (eventData) {
                 taste.should.exist(eventData);
                 eventData.payload.should.deep.equal(expected);
                 done();
             });
 
-            calls[0]({ data: data });
+            factory.emit(req, eventNameBase, null);
         });
 
         it('should add an event for debug params', function (done) {
-            var calls = [];
             var eventNameBase = { resource: 'src', adapter: 'adptr', method: 'meth' };
             var debugParams = { type: 'blah', timing: 'after' };
             var factory = new Factory({ debug: true });
-            factory.addEventEmitter(calls, eventNameBase, debugParams);
+            var req = { hello: 'world' };
+            var expected = { hello: 'world' };
 
-            var data = { hello: 'world' };
-            var expected = { data: data, resource: 'srcResource' };
             bus.on('src.adptr.meth.blah.after', function (eventData) {
                 taste.should.exist(eventData);
                 eventData.payload.should.deep.equal(expected);
                 done();
             });
 
-            calls[0]({ data: data });
-        });
-    });
-
-    describe('createFilters()', function () {
-        it('should load a set of filters', function () {
-            var factory = new Factory({
-                servicesDir: 'services',
-                loadModule: function () {
-                    return function (req) { return new Q(req); };
-                }
-            });
-            var filters = factory.createFilters(['filter1', 'filter2', 'filter3']);
-
-            taste.should.exist(filters);
-            filters.should.have.property('filter1').that.is.a('function');
-        });
-    });
-
-    describe('getFilters()', function () {
-        it('should use the property filters if they exist', function () {
-            var factory = new Factory({});
-            factory.createFilters = taste.spy();
-
-            var adapter = {
-                beforeFilters: { foo: ['one', 'two', 'three'] },
-                prependBeforeFilters: { foo: ['zero' ]},
-                appendBeforeFilters: { foo: ['four' ]}
-            };
-            var method = 'foo';
-            factory.getFilters(adapter, method, null);
-            factory.createFilters.should.have.been.calledWith(['zero', 'one', 'two', 'three', 'four']);
-        });
-
-        it('should use the method annotations', function () {
-            var factory = new Factory({});
-            factory.createFilters = taste.spy();
-
-            var adapter = {
-                prependBeforeFilters: { foo: ['zero' ]},
-                appendBeforeFilters: { foo: ['four' ]},
-                foo: function () {
-                    // @beforeFilters(["two", "three"])
-                }
-            };
-            var method = 'foo';
-            factory.getFilters(adapter, method, null);
-            factory.createFilters.should.have.been.calledWith(['zero', 'two', 'three', 'four']);
+            factory.emit(req, eventNameBase, debugParams);
         });
     });
 
     describe('putItAllTogether()', function () {
         var factory = new Factory({});
 
-        it('should throw an error if there are no methods', function () {
-            var fn = function () {
-                factory.putItAllTogether({}, { name: 'blah' }, {}, {});
-            };
-            taste.expect(fn).to.throw(/Resource blah has no methods/);
+        afterEach(function () {
+            bus.removeAllListeners();
         });
-        
-        it('should return an empty object if the adapter has no matching methods', function () {
-            var serviceInfo = { adapterName: 'somethin' };
-            var resource = { name: 'blah', methods: { somethin: ['one', 'two'] } };
-            var adapter = {};
-            var service = factory.putItAllTogether(serviceInfo, resource, adapter, {});
-            service.should.deep.equal({});
-        });
-        
-        it('should return an object with all the matching adapter methods (no filters)', function (done) {
+
+        it('should return an object with all the matching adapter methods', function (done) {
             var serviceInfo = { adapterName: 'somethin' };
             var resource = { name: 'blah', methods: { somethin: ['one', 'two'] } };
             var data = 'hello, world';
-            var adapter = { one: function () { return { resource: resource, data: data }; } };
+            var adapter = { one: function () { return new Q(data); } };
             var service = factory.putItAllTogether(serviceInfo, resource, adapter, {});
             taste.should.exist(service, 'Service does not exist');
             taste.should.exist(service.one, 'Service does not have a method called one');
             service.one.should.be.a('function');
 
             var promise = service.one();
-            taste.eventuallySame(promise, { resource: resource, data: data }, done);
+            taste.eventuallySame(promise, data, done);
         });
 
-        it('should return an object with all the matching adapter methods (with filters)', function (done) {
-            var serviceInfo = { adapterName: 'somethin' };
-            var resource = { name: 'blah', methods: { somethin: ['one', 'two'] }, params: { one: { optional: ['data'] }} };
-            var expected = {
-                resource: resource,
-                inputData: 'start',
-                method: 'one',
-                data: 'start|something|another|adapter|lastOne'
+        it('should emit an event once the adapter method returns', function (done) {
+            var serviceInfo = { resourceName: 'blah', adapterName: 'somethin' };
+            var resource = {
+                name: 'blah',
+                methods: { somethin: ['one', 'two'] },
+                params: { one: { required: ['data'] } }
             };
-
-            factory.filterCache = {
-                applySomething: function (req) {
-                    req.data += '|something';
-                    return new Q(req);
-                },
-                applyAnother: function (req) {
-                    req.data += '|another';
-                    return new Q(req);
-                },
-                lastOne: function (res) {
-                    res.data += '|lastOne';
-                    return new Q(res);
-                }
-            };
-
-            var adapter = {
-                beforeFilters: { all: ['applySomething', 'applyAnother'] },
-                afterFilters: { all: ['lastOne'] },
-                one: function (req) {
-                    req.data += '|adapter';
-                    return new Q(req);
-                }
-            };
-            var service = factory.putItAllTogether(serviceInfo, resource, adapter, null);
+            var data = 'hello, world';
+            var inputData = { data: { someparam: 'one' } };
+            var adapter = { one: function () { return new Q(data); } };
+            var service = factory.putItAllTogether(serviceInfo, resource, adapter, {});
             taste.should.exist(service, 'Service does not exist');
             taste.should.exist(service.one, 'Service does not have a method called one');
             service.one.should.be.a('function');
 
-            var promise = service.one({ data: 'start' });
-            taste.eventuallySame(promise, expected, done);
+            bus.on('blah.somethin.one', function (eventData) {
+                eventData.payload.should.deep.equal({ inputData: inputData.data, data: data });
+                done();
+            });
+
+            service.one(inputData);
         });
     });
 
-    describe('getServiceInfo()', function () {
-        var factory = new Factory({});
-
-        it('should set adapter and service for blahService', function () {
-            var serviceName = 'blahService';
-            var adapterMap = { service: 'generic' };
-            var expected = { serviceName: 'blahService', adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah' };
-            var actual = factory.getServiceInfo(serviceName, adapterMap);
-            taste.should.exist(actual);
-            actual.should.deep.equal(expected);
-        });
-
-        it('should set adapter and service for blahYoService', function () {
-            var serviceName = 'blahYoService';
-            var adapterMap = { service: 'generic' };
-            var expected = { serviceName: 'blahYoService', adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah.yo' };
-            var actual = factory.getServiceInfo(serviceName, adapterMap);
-            taste.should.exist(actual);
-            actual.should.deep.equal(expected);
-        });
-
-        it('should set adapter and service for blahBackendService', function () {
-            var serviceName = 'blahBackendService';
-            var adapterMap = { backend: 'test' };
-            var expected = { serviceName: 'blahBackendService', adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah' };
-            var actual = factory.getServiceInfo(serviceName, adapterMap);
-            taste.should.exist(actual);
-            actual.should.deep.equal(expected);
-        });
-
-        it('should set adapter and service for blahAnotherBackendService', function () {
-            var serviceName = 'blahAnotherBackendService';
-            var adapterMap = { backend: 'test' };
-            var expected = { serviceName: 'blahAnotherBackendService', adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah.another' };
-            var actual = factory.getServiceInfo(serviceName, adapterMap);
-            taste.should.exist(actual);
-            actual.should.deep.equal(expected);
-        });
-    });
-    
-    describe('getResource()', function () {
-        it('should throw error if resource not found', function () {
+    describe('loadIfExists()', function () {
+        it('should throw an error if does not exist and error passed in', function () {
             var factory = new Factory({});
             var fn = function () {
-                factory.getResource({}, []);
+                factory.loadIfExists('blah/asdf/asdfs', {}, 'some err msg here');
             };
-            taste.expect(fn).to.throw(/Could not find resource file/);
+            taste.expect(fn).to.throw(/some err msg here/);
         });
 
-        it('should load the resource module if it is valid', function () {
-            var serviceInfo = { resourceName: 'blah' };
-            var injector = {
-                rootDir: taste.fixturesDir,
-                servicesDir: 'services',
-                loadModule: taste.spy()
-            };
+        it('should return null if not exist and no error passed in', function () {
+            var factory = new Factory();
+            var actual = factory.loadIfExists('blah/asdf/asdfs', {}, null);
+            taste.expect(actual).to.be.null;
+        });
 
+        it('should load the module if it exists', function () {
+            var data = { some: 'data' };
+            var injector = {
+                servicesDir: 'services',
+                rootDir: __dirname + '/../../fixtures',
+                loadModule: function () { return data; }
+            };
             var factory = new Factory(injector);
-            factory.getResource(serviceInfo, []);
-            injector.loadModule.should.have.been.calledWith('services/resources/blah/blah.resource');
+            var actual = factory.loadIfExists('/resources/blah/blah.repo.service', {}, null);
+            actual.should.deep.equal(data);
         });
     });
 
@@ -351,6 +260,69 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
+    describe('getResource()', function () {
+        it('should throw error if resource not found', function () {
+            var factory = new Factory({});
+            var fn = function () {
+                factory.getResource({}, []);
+            };
+            taste.expect(fn).to.throw(/Could not find resource file/);
+        });
+
+        it('should load the resource module if it is valid', function () {
+            var serviceInfo = { resourceName: 'blah' };
+            var injector = {
+                rootDir: taste.fixturesDir,
+                servicesDir: 'services',
+                loadModule: taste.spy()
+            };
+
+            var factory = new Factory(injector);
+            factory.getResource(serviceInfo, []);
+            injector.loadModule.should.have.been.calledWith('services/resources/blah/blah.resource');
+        });
+    });
+
+    describe('getServiceInfo()', function () {
+        var factory = new Factory({});
+
+        it('should set adapter and service for blahService', function () {
+            var serviceName = 'blahService';
+            var adapterMap = { service: 'generic' };
+            var expected = { serviceName: 'blahService', adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah' };
+            var actual = factory.getServiceInfo(serviceName, adapterMap);
+            taste.should.exist(actual);
+            actual.should.deep.equal(expected);
+        });
+
+        it('should set adapter and service for blahYoService', function () {
+            var serviceName = 'blahYoService';
+            var adapterMap = { service: 'generic' };
+            var expected = { serviceName: 'blahYoService', adapterName: 'service', adapterImpl: 'generic', resourceName: 'blah.yo' };
+            var actual = factory.getServiceInfo(serviceName, adapterMap);
+            taste.should.exist(actual);
+            actual.should.deep.equal(expected);
+        });
+
+        it('should set adapter and service for blahBackendService', function () {
+            var serviceName = 'blahBackendService';
+            var adapterMap = { backend: 'test' };
+            var expected = { serviceName: 'blahBackendService', adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah' };
+            var actual = factory.getServiceInfo(serviceName, adapterMap);
+            taste.should.exist(actual);
+            actual.should.deep.equal(expected);
+        });
+
+        it('should set adapter and service for blahAnotherBackendService', function () {
+            var serviceName = 'blahAnotherBackendService';
+            var adapterMap = { backend: 'test' };
+            var expected = { serviceName: 'blahAnotherBackendService', adapterName: 'backend', adapterImpl: 'test', resourceName: 'blah.another' };
+            var actual = factory.getServiceInfo(serviceName, adapterMap);
+            taste.should.exist(actual);
+            actual.should.deep.equal(expected);
+        });
+    });
+
     describe('create', function () {
         it('should return an item from cache if it exists', function () {
             var serviceName = 'someService';
@@ -382,6 +354,25 @@ describe('Unit tests for ' + name, function () {
             var factory = new Factory(injector);
             var actual = factory.create(serviceName, []);
             actual.should.deep.equal(expected);
+        });
+    });
+
+    describe('isCandidate()', function () {
+        var factory = new Factory({});
+
+        it('should return false if there is a slash', function () {
+            var actual = factory.isCandidate('something/foo');
+            actual.should.equal(false);
+        });
+        
+        it('should return false if the name does not have Service', function () {
+            var actual = factory.isCandidate('somethinyo');
+            actual.should.equal(false);
+        });
+        
+        it('should return true if there is no slash and the name contains Service', function () {
+            var actual = factory.isCandidate('someService');
+            actual.should.equal(true);
         });
     });
 });
