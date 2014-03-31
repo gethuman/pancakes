@@ -37,13 +37,12 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('validateRequestParams()', function () {
-        it('should return an empty object if no params sent in', function () {
+        it('should return an empty object if no params sent in', function (done) {
             var method = 'test';
             var resource = { test: true };
             var factory = new Factory({});
-            var actual = factory.validateRequestParams(null, resource, method);
-            var expected = {};
-            actual.should.deep.equal(expected);
+            var promise = factory.validateRequestParams(null, resource, method);
+            taste.eventuallySame(promise, undefined, done);
         });
 
         it('should be rejected if missing a required param', function () {
@@ -51,10 +50,8 @@ describe('Unit tests for ' + name, function () {
             var resource = { params: { create: { required: ['zzz'] }}};
             var factory = new Factory({});
             var req = { data: 'blah' };
-            var fn = function () {
-                factory.validateRequestParams(req, resource, method);
-            };
-            taste.expect(fn).to.throw(/create missing zzz/);
+            var promise = factory.validateRequestParams(req, resource, method);
+            promise.should.be.rejected;
         });
 
         it('should be rejected if has a value in the request that is not valid', function () {
@@ -62,20 +59,17 @@ describe('Unit tests for ' + name, function () {
             var resource = {};
             var factory = new Factory({});
             var req = { data: 'blah' };
-            var fn = function () {
-                factory.validateRequestParams(req, resource, method);
-            };
-            taste.expect(fn).to.throw(/data is not allowed/);
+            var promise = factory.validateRequestParams(req, resource, method);
+            promise.should.be.rejected;
         });
 
-        it('should return back data if all valid', function () {
+        it('should return back data if all valid', function (done) {
             var method = 'create';
             var resource = { params: { create: { required: ['data'], optional: ['some'] }}};
             var factory = new Factory({});
             var req = { data: 'blah', some: 'another' };
-            var actual = factory.validateRequestParams(req, resource, method);
-            var expected = { data: 'blah', some: 'another' };
-            actual.should.deep.equal(expected);
+            var promise = factory.validateRequestParams(req, resource, method);
+            taste.eventuallySame(promise, undefined, done);
         });
     });
 
