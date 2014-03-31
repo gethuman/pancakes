@@ -12,30 +12,6 @@ var bus     = taste.target('event.bus');
 
 describe('Unit tests for ' + name, function () {
 
-    describe('parseIfJson()', function () {
-        it('should return back a normal string', function () {
-            var data = 'something';
-            var factory = new Factory({});
-            var actual = factory.parseIfJson(data);
-            actual.should.equal(data);
-        });
-
-        it('should return back a normal object', function () {
-            var data = { some: 'obj' };
-            var factory = new Factory({});
-            var actual = factory.parseIfJson(data);
-            actual.should.deep.equal(data);
-        });
-
-        it('should parse JSON in a string to an object', function () {
-            var input = '{ "some": "thing" } ';
-            var expected = { some: 'thing' };
-            var factory = new Factory({});
-            var actual = factory.parseIfJson(input);
-            actual.should.deep.equal(expected);
-        });
-    });
-
     describe('validateRequestParams()', function () {
         it('should return an empty object if no params sent in', function (done) {
             var method = 'test';
