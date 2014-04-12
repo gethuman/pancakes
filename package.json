@@ -21,7 +21,8 @@
     "dot": "~1.0.2",
     "q": "^1.0.0",
     "eventemitter2": "^0.4.13",
-    "gulp": "^3.6.0"
+    "gulp": "^3.6.0",
+    "jeff-core": "^0.1.4"
   },
   "devDependencies": {
     "gulp": "^3.5.2",
