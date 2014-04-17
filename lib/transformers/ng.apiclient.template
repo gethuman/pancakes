@@ -1,0 +1,33 @@
+angular.module('{{=it.appName}}').factory('{{=it.serviceName}}', [
+    'ajax',
+    function (ajax) {
+        return {
+            {{ for(var methodName in it.methods) { }}
+            {{=methodName}}: function (req) {
+                return ajax.send('{{=it.methods[methodName].url}}', '{{=it.methods[methodName].httpMethod}}', req);
+            },
+            {{ } }}
+            whoAmI: function () {
+                return '{{=it.serviceName}}';
+            }
+        };
+    }
+]);
+
+angular.module('{{=it.appName}}').factory('{{=it.modelName}}', [
+    '{{=it.serviceName}}',
+    function ({{=it.serviceName}}) {
+
+        var {{=it.modelName}} = function (data) {
+            this.data = data;
+        };
+
+        angular.extend({{=it.modelName}}, {{=it.serviceName}});
+
+        {{=it.modelName}}.prototype.save = function () {
+            return this.data && this.data._id ?
+                {{=it.serviceName}}.update(this.data) :
+                {{=it.serviceName}}.create(this.data);
+        };
+    }
+]);

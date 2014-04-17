@@ -1,0 +1,9 @@
+angular.module('{{=it.appName}}').{{=it.ngType}}('{{=it.moduleName}}', [
+    {{~it.convertedParams :param:index}}'{{=param}}', {{~}}
+    function({{~it.params :param:index}}{{=param}}{{? index < (it.params.length - 1) }}, {{?}}{{~}}) {
+        {{~it.ngrefs :param:index}}
+        var {{=param}} = angular;
+        {{~}}
+        {{=it.body}}
+    }
+]);
