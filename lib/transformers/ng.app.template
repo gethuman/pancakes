@@ -1,22 +1,9 @@
 angular.module('{{=it.appName}}', [{{~it.deps :dep:index}}'{{=dep}}'{{? index < (it.deps.length - 1) }}, {{?}}{{~}}]);
 
-angular.module('{{=it.appName}}').config([
-    '$stateProvider', '$locationProvider', 'stateLoaderProvider',
-    function ($stateProvider, $locationProvider, stateLoader) {
-        $locationProvider.html5Mode(true);
-        stateLoader.loadStates($stateProvider, {{=it.routes}}, {
-            {{ for (var name in it.resolveHandlers) { }}
-            '{{=name}}': [
-               {{~it.resolveHandlers[name].convertedParams :param:index}}'{{=param}}', {{~}}
-               function({{~it.resolveHandlers[name].params :param:index}}{{=param}}{{? index < (it.resolveHandlers[name].params.length - 1) }}, {{?}}{{~}}) {
-                   {{~it.resolveHandlers[name].ngrefs :param:index}}
-                   var {{=param}} = angular;
-                   {{~}}
-                   {{=it.resolveHandlers[name].body}}
-               }
-           ],
-            {{ } }}
-            end: true
-        });
+angular.module('{{=it.appName}}').run([
+    {{~it.attach :item:index}}'{{=item}}', {{~}}'$rootScope',
+    function ({{~it.attach :item:index}}{{=item}}, {{~}}$rootScope) {
+        {{~it.attach :item:index}}$rootScope.{{=item}} = {{=item}};
+        {{~}}
     }
 ]);

@@ -14,12 +14,16 @@ angular.module('{{=it.appName}}').directive('{{=it.directiveName}}', [
 
 {{? it.controllerExists }}
 angular.module('{{=it.appName}}').controller('{{=it.controllerName}}', [
-    {{~it.convertedParams :param:index}}'{{=param}}', {{~}}'initialModel',
-    function({{~it.params :param:index}}{{=param}}, {{~}}initialModel) {
+    {{~it.convertedParams :param:index}}'{{=param}}', {{~}}'initialModel', 'pageSettings',
+    function({{~it.params :param:index}}{{=param}}, {{~}}initialModel, pageSettings) {
         {{~it.ngrefs :param:index}}
         var {{=param}} = angular;
         {{~}}
         angular.extend($scope, initialModel);
+        if ($scope.pageHead && $scope.pageHead.title) {
+            var title = $scope.pageHead.title;
+            pageSettings.updateHead(title, $scope.pageHead.description ||  title);
+        }
         {{=it.body}}
     }
 ]);
