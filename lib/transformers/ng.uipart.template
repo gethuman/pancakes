@@ -12,6 +12,24 @@ angular.module('{{=it.appName}}').directive('{{=it.directiveName}}', [
 ]);
 {{?}}
 
+{{? it.isPartial }}
+// controller for partial
+angular.module('{{=it.appName}}').controller('{{=it.controllerName}}', [
+    {{~it.convertedParams :param:index}}'{{=param}}', {{~}}
+    function({{~it.params :param:index}}{{=param}}{{? index < (it.params.length - 1) }}, {{?}}{{~}}) {
+        {{~it.ngrefs :param:index}}
+        var {{=param}} = angular;
+        {{~}}
+        {{? it.modifyScope }}
+        {{=it.modifyScope}}($scope);
+        {{?}}
+        {{=it.body}}
+    }
+]);
+{{?}}
+
+{{? !it.isPartial }}
+// controller for page
 angular.module('{{=it.appName}}').controller('{{=it.controllerName}}', [
     {{~it.convertedParams :param:index}}'{{=param}}', {{~}}'initialModel', 'pageSettings',
     function({{~it.params :param:index}}{{=param}}, {{~}}initialModel, pageSettings) {
@@ -26,6 +44,7 @@ angular.module('{{=it.appName}}').controller('{{=it.controllerName}}', [
         {{=it.body}}
     }
 ]);
+{{?}}
 
 angular.module('{{=it.appName}}').run([
     '$templateCache',
