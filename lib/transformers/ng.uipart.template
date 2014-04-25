@@ -7,6 +7,9 @@ angular.module('{{=it.appName}}').directive('{{=it.directiveName}}', [
             replace: true,
             templateUrl: '{{=it.viewUrl}}',
             controller: '{{=it.controllerName}}'
+            {{? it.directiveScope }}
+            , scope: {{=it.directiveScope}}
+            {{?}}
         };
     }
 ]);
