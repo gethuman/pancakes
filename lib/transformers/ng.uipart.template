@@ -35,7 +35,7 @@ angular.module('{{=it.appName}}').controller('{{=it.controllerName}}', [
 // controller for page
 angular.module('{{=it.appName}}').controller('{{=it.controllerName}}', [
     {{~it.convertedParams :param:index}}'{{=param}}', {{~}}'initialModel', 'pageSettings',
-    function({{~it.params :param:index}}{{=param}}, {{~}}initialModel, pageSettings) {
+    function ({{~it.params :param:index}}{{=param}}, {{~}}initialModel, pageSettings) {
         {{~it.ngrefs :param:index}}
         var {{=param}} = angular;
         {{~}}
@@ -48,6 +48,26 @@ angular.module('{{=it.appName}}').controller('{{=it.controllerName}}', [
     }
 ]);
 {{?}}
+
+{{~it.formElements :formElement}}
+angular.module('{{=it.appName}}').directive('{{=formElement.name}}', [
+    {{~formElement.convertedParams :param}}'{{=param}}', {{~}}
+    function ({{~formElement.params :param:index}}{{=param}}{{? index < (formElement.params.length - 1) }}, {{?}}{{~}}) {
+        {{~formElement.ngrefs :param}}
+        var {{=param}} = angular;
+        {{~}}
+
+        return {
+            require: 'ngModel',
+            link: function (scope, elem, attrs, cntl) {
+                cntl.$parsers.unshift(function (viewValue) {
+                    {{=formElement.body}}
+                });
+            }
+        };
+    }
+]);
+{{~}}
 
 angular.module('{{=it.appName}}').run([
     '$templateCache',
