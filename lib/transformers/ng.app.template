@@ -7,3 +7,15 @@ angular.module('{{=it.appName}}').run([
         {{~}}
     }
 ]);
+
+{{~it.evalAttrs :attr}}
+angular.module('{{=it.appName}}').directive('{{=attr.ngName}}', [
+    function () {
+        return function (scope, element, attr) {
+            scope.$watch(attr['{{=attr.ngName}}'], function (val) {
+                attr.$set('{{=attr.htmlName}}', val);
+            });
+        }
+    }
+]);
+{{~}}

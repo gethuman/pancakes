@@ -23,8 +23,7 @@
     "eventemitter2": "^0.4.13",
     "gulp": "^3.6.0",
     "jeff-core": "^0.1.4",
-    "absurd": "^0.3.17",
-    "jeff-jangular": "0.0.1"
+    "absurd": "^0.3.17"
   },
   "devDependencies": {
     "gulp": "^3.6.1",
