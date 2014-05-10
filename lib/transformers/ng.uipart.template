@@ -43,6 +43,7 @@ angular.module('{{=it.appName}}').controller('{{=it.controllerName}}', [
         if ($scope.pageHead && $scope.pageHead.title) {
             var title = $scope.pageHead.title;
             pageSettings.updateHead(title, $scope.pageHead.description ||  title);
+            pageSettings.updatePageStyle('{{=it.appShortName}}', '{{=it.pageName}}');
         }
         {{=it.body}}
     }

@@ -3,7 +3,7 @@ angular.module('{{=it.appName}}').config([
     '$stateProvider', '$locationProvider', 'stateLoaderProvider',
     function ($stateProvider, $locationProvider, stateLoader) {
         $locationProvider.html5Mode(true);
-        stateLoader.loadStates($stateProvider, '{{=it.appName}}', {{=it.routes}}, {
+        stateLoader.loadStates($stateProvider, '{{=it.appShortxName}}', {{=it.routes}}, {
             {{ for (var name in it.resolveHandlers) { }}
             '{{=name}}': [
                {{~it.resolveHandlers[name].convertedParams :param:index}}'{{=param}}', {{~}}
