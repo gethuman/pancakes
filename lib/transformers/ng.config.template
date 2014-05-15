@@ -6,13 +6,20 @@ angular.module('{{=it.appName}}').config([
         stateLoader.loadStates($stateProvider, '{{=it.appShortxName}}', {{=it.routes}}, {
             {{ for (var name in it.resolveHandlers) { }}
             '{{=name}}': [
-               {{~it.resolveHandlers[name].convertedParams :param:index}}'{{=param}}', {{~}}
-               function({{~it.resolveHandlers[name].params :param:index}}{{=param}}{{? index < (it.resolveHandlers[name].params.length - 1) }}, {{?}}{{~}}) {
-                   {{~it.resolveHandlers[name].ngrefs :param:index}}
-                   var {{=param}} = angular;
-                   {{~}}
-                   {{=it.resolveHandlers[name].body}}
-               }
+                {{~it.resolveHandlers[name].convertedParams :param:index}}'{{=param}}', {{~}}'initialLoad',
+                function({{~it.resolveHandlers[name].params :param:index}}{{=param}}, {{~}}initialLoad) {
+
+                    var serverModel = initialLoad.getServerModel();
+                    if (serverModel) {
+                        initialLoad.complete();
+                        return serverModel;
+                    }
+
+                    {{~it.resolveHandlers[name].ngrefs :param:index}}
+                    var {{=param}} = angular;
+                    {{~}}
+                    {{=it.resolveHandlers[name].body}}
+                }
            ],
             {{ } }}
             end: true
