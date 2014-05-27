@@ -5,7 +5,7 @@ angular.module('{{=it.appName}}').run([
     function ({{~it.attach :item:index}}{{=item}}, {{~}}$rootScope, log) {
         {{~it.attach :item:index}}$rootScope.{{=item}} = {{=item}};
         {{~}}
-        $rootScope.fullScreen = {{=it.fullScreen}}
+        $rootScope.fullScreen = {{=it.fullScreen}};
 
         $rootScope.$on('$stateNotFound', function (event, unfoundState, fromState, fromParams) {
             log.error('Unfound state: ' + JSON.stringify(unfoundState) + '\nfrom state:' + JSON.stringify(fromState));
