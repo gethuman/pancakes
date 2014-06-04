@@ -22,20 +22,20 @@
     "q": "^1.0.1",
     "eventemitter2": "^0.4.13",
     "gulp": "^3.6.0",
-    "jeff-core": "^0.1.4",
-    "absurd": "^0.3.17"
+    "jeff-core": "^0.1.11",
+    "absurd": "^0.3.24"
   },
   "devDependencies": {
-    "gulp": "^3.6.1",
-    "mocha": "~1.18.2",
+    "gulp": "^3.7.0",
+    "mocha": "~1.20.1",
     "chai": "~1.9.1",
-    "sinon": "^1.9.1",
+    "sinon": "^1.10.2",
     "sinon-chai": "^2.5.0",
     "mocha-as-promised": "^2.0.0",
     "chai-as-promised": "^4.1.1",
     "blanket": "^1.1.6",
     "gulp-mocha": "^0.4.1",
-    "gulp-watch": "^0.6.2",
-    "gulp-jshint": "^1.5.3"
+    "gulp-watch": "^0.6.5",
+    "gulp-jshint": "^1.6.1"
   }
 }
