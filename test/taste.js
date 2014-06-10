@@ -11,6 +11,7 @@ var chai            = require('chai');
 var sinonChai       = require('sinon-chai');
 var chaiAsPromised  = require('chai-as-promised');
 var mochaAsPromised = require('mocha-as-promised');
+var path            = require('path');
 
 mochaAsPromised();
 chai.use(sinonChai);
@@ -48,10 +49,13 @@ module.exports = {
     eventuallySame: eventuallySame,
     target: target,
     fixturesDir: __dirname + '/fixtures',
+    delim: path.normalize('/'),
 
     spy:    sinon.spy,
     expect: chai.expect,
     should: chai.should()
 };
+
+
 
 

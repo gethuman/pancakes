@@ -31,7 +31,7 @@ describe('Unit tests for ' + name, function () {
         });
 
         it('should get a simple all lower case name', function () {
-            var path = 'something/blah.js';
+            var path = 'something' + taste.delim + 'blah.js';
             var expected = 'blah';
             var actual = utils.getCamelCase(path);
             taste.should.exist(actual);
@@ -39,7 +39,7 @@ describe('Unit tests for ' + name, function () {
         });
 
         it('should turn a dot notation name to camelCase', function () {
-            var path = 'something/blah.boo.yeah.js';
+            var path = 'something' + taste.delim + 'blah.boo.yeah.js';
             var expected = 'blahBooYeah';
             var actual = utils.getCamelCase(path);
             taste.should.exist(actual);
