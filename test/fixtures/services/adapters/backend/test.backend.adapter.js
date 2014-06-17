@@ -2,7 +2,7 @@
  * Author: Jeff Whelpley
  * Date: 2/21/14
  *
- * Example module for hte mongo persist adapter
+ * Example module for the mongo persist adapter
  */
 module.exports = function (Q) {
 

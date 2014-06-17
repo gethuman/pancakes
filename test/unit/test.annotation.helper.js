@@ -12,9 +12,11 @@ describe('Unit tests for ' + name, function () {
 
     describe('getAnnotationInfo()', function () {
         it('should return null if no annotation found', function () {
-            var fn = function () {};
+            var fn = function() {};
+
             var actual = annotationHelper.getAnnotationInfo('module', fn);
             taste.should.not.exist(actual);
+            taste.expect( actual ).to.be.null;
         });
 
         it('should return an array', function () {
@@ -37,7 +39,7 @@ describe('Unit tests for ' + name, function () {
             var fn = function () {
                 annotationHelper.getModuleInfo(flapjack);
             };
-            taste.expect(fn).to.throw(SyntaxError);
+            fn.should.throw(SyntaxError);
         });
 
         it('should return back parsed JSON in annotation', function () {

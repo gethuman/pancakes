@@ -26,7 +26,6 @@ describe('Unit tests for ' + name, function () {
         it('should return empty string if no path', function () {
             var expected = '';
             var actual = utils.getCamelCase();
-            taste.should.exist(actual);
             actual.should.equal(expected);
         });
 

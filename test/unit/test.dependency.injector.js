@@ -6,6 +6,7 @@
  */
 var taste = require('../taste');
 var name = 'dependency.injector';
+var pancakes = require('../../lib/pancakes');
 var Injector = taste.target(name);
 var injector;
 
@@ -26,6 +27,20 @@ describe('Unit tests for ' + name, function () {
             taste.should.exist(injector.aliases.testBackendAdapter, 'testBackendAdapter does not exist');
             taste.should.exist(injector.aliases.BackendAdapter, 'backendAdapter does not exist');
             injector.aliases.testBackendAdapter.should.deep.equal(injector.aliases.BackendAdapter);
+        });
+    });
+
+    describe('clearCache()', function() {
+        it('should clear out the cache of DependencyInjector.factories', function() {
+            pancakes.init({
+                rootDir: taste.fixturesDir,
+                servicesDir: 'services'
+            });
+            pancakes.getService('blah');
+            var injector = pancakes.getInjector();
+            injector.clearCache();
+            injector.should.have.property('flapjackFactory');
+            (injector.flapjackFactory.cache).should.be.empty;
         });
     });
 
@@ -78,7 +93,7 @@ describe('Unit tests for ' + name, function () {
             var fn = function () {
                 injector.loadModule(modulePath, moduleStack);
             };
-            taste.expect(fn).to.throw(/Circular reference/);
+            fn.should.throw(/Circular reference/);
         });
 
         it('should load a simple module', function () {
