@@ -44,35 +44,10 @@ var target = function (relativePath) {
     return require('../lib/' + relativePath);
 };
 
-/**
- *
- * @param uninjectedModule
- * @param dependencies
- */
-var inject = function (uninjectedModule, dependencies) {
-    var params = pancakes.getParameters(uninjectedModule);
-    var argsToInject = [];
-
-    _.each(params, function (param) {
-        var arg = dependencies[param];
-
-        // if no argument is passed in for this param, throw error because likely issue in test
-        if (arg === undefined) {
-            throw new Error('Missing argument ' + param + ' for ' +
-                uninjectedModule.toString().substring(0, 100));
-        }
-
-        argsToInject.push(arg);
-    });
-
-    return uninjectedModule.apply(null, argsToInject);
-};
-
 module.exports = {
     all: all,
     eventuallySame: eventuallySame,
     target: target,
-    inject: inject,
     fixturesDir: __dirname + '/fixtures',
     delim: path.normalize('/'),
 
