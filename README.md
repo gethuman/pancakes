@@ -1,10 +1,7 @@
 pancakes
 ========
 
-**NOTE** - This is a work in progress and should not be used right now
-
-Pancakes is a high-level, full-stack JavaScript framework. It was designed with the following
-goals in mind:
+Pancakes is a high-level, full-stack JavaScript framework. It was designed with the following goals in mind:
 
 1. **SEO** - Ability to pre-render content on the server, even for Single Page Apps. No need for PhantomJS or Fragment Spec hacks.
 1. **DRY** - One template that can be rendered on the client or server. One module that
@@ -22,17 +19,20 @@ Although this framework is built for flexibility, it is opinionated. We will val
 simple over providing options.
 
 We are still working on making this library awesome, but we would love to know if you are interested
-and would like to get involved. Hit me up on twitter @jeffwhelpley.
+and would like to get involved. Hit me up on twitter @jeffwhelpley. This README goes over the pancakes
+framework and key concepts. If you would like a guide for actually using pancakes, go to
+the [pancakes generator](https://github.com/gethuman/generator-pancakes).
 
-# Core Concepts
+# Pancakes Framework
 
-This section goes over a couple examples of how pancakes is used to get you familar with what it is all about
-details for now to actually implement pancakes yourself will come later.
+This section goes over the code in the pancakes framework and how it is used. When reading this documentation
+keep in mind that there is the framework itself (which this section goes over) and then there are
+the projects that use the framework (described in the Components section further down).
 
-## Dependency Injection
+## Framework 1 - Dependency Injection
 
 One of the core pieces of Pancakes is the Dependency Injector. All Pancakes code (event client side code) is
-written "node style" (i.e. module.exports) with one exception. Normally dependencies in Node.js are pulled in
+written "node style" (i.e. module.exports). Normally dependencies in Node.js are pulled in
 through require() like this:
 
 ```javascript
@@ -59,11 +59,15 @@ module.exports = function (Q, _, myCoolUtil) {
 };
 ```
 
+Under the scenes, the pancakes dependency injector utilizes a number of different DI factories. Each factory
+knows how to convert certain parameters into certain modules. For example, the service.factory knows how
+to convert any parameter that ends with the suffix 'Service' into an actual pancakes service.
+
 #### Why?
 
 There are four primary reasons why Pancakes uses DI:
 
-1. It enables us to easily generate client side code. Theoretically you should be able to generate any type of
+1. It enables us to easily generate client side code. Theoretically you should be able to generate almost any type of
 client side code (ex. Backbone using AMD), but it is especially easy to translate into AngularJS because Angular
 has a very similar idea of DI.
 1. On the server side it allows us to create a number of 'virtual objects' that can be injected as needed (much more
@@ -137,26 +141,55 @@ different sources. Note: while the general application of annotations are very u
 when you specifically try to do something like this above because the different objects injected on the client
 and server could cause the code to behave in different ways.
 
-## Services
+## Framework 2 - Transformer
+
+The pancakes framework will take generic modules written for pancakes and convert them into client side
+code using a transformer. Currently most of the transformer code is project specific so it will reside within
+the client project, however, pancakes has a base transformer class that contains the core utility methods
+needed to construct a transformer.
+
+## Framework 3 - Utilities
+
+Finally within the pancakes framework there are a couple utilities including:
+
+* eventBus - a way of sending events between components
+* utensils - utility methods for doing dependency injection and client side transformation
+* annotationHelper - interprets annotations within modules (ex. // @module({ "server": { "somekey": "someval" } })
+* debugHandler - pretty prints logs for pancakes and long error stack traces
+
+# Pancakes Project Components
+
+When you create a project that uses the pancakes framework it has the following components. Some of these componets
+are a requirement whenever you use Pancakes, but some of it is just best practice.
+
+## Component 1 - Services
 
 At a high level, the idea is to create an ulta DRY business logic layer that can be used at **ALL** levels of
 your system (i.e. API, web server, web client, browser, hardware integrated circuits, etc.). There are three
 layers within the Services:
 
 1. adapters - An adapter is a generic implementation of CRUD-like operations for a particular back end repository
-or external service. So, for example, there may be a 'users' resource, but there would be a generic
-'mongo.persist' adapter to save user info to mongo and an 'api' adapter call out to an API for /users.
-1. resources - The layer contains objects that are specific to a business entity. Each resource has a configuration
-file that contains all information needed to use that resource in all layers of your application. So, this includes
-database schema fields, security ACLs, API endpoints, field validations, etc.
-1. propagators - Pancakes assumes the use of NoSql and heavy de-normalization. In most cases data is both de-normalized
+or external service. So, for example, there are adapters for persist (saving to a database), search (using a search engine),
+api (calling an api), realtime (using push notifications and subscriptions), etc. Each adapter has an implementation
+(ex. MongoDB for persist, Firebase for realtime, etc.). A specific service, like userService, could then utilize any
+of these adapters which each one storing the user data to different locations and in different ways.
+1. filters - When a service method is called, the input and/or output data can be sent through filters which modify
+the data and/or detect issues and throw errors when there are propblems. For example, the ACL filter will utilize
+Fakeblock.js to throw an error if there are any security access issues with a given request.
+1. reactors - Pancakes assumes the use of NoSql and heavy de-normalization. In most cases data is both de-normalized
 within one particular back end and copied to other back ends. While normal user-initiated, sychronous transactions
 flow through resources and adapters, propagators are responsible for asychronously moving/copying/translating data to
 other collections or backends.
+1. resources - The layer contains objects that are specific to a business entity. Each resource has a configuration
+file that contains all information needed to use that resource in all layers of your application. So, this includes
+database schema fields, security ACLs, API endpoints, field validations, etc. In addition to the actual resource
+files which contain all this config data, there can be aggregate/override services that exist. For example,
+postPersistService takes the persist adapter and overrides it with post-specific logic. Something like usernameService
+is an aggregator that calls out to multiple other services.
 
-There is no actual service object within a Pancakes app. Rather, a virtual service object is generated by Pancakes
+When a client uses a service, they are actually using a virtual service object is generated by Pancakes
 on the fly based on the resource definition which then utilizes the appropriate adapter as the implementation
-of that interface. So, for example, in your code you may have:
+of that interface and any overrides that may exist. So, for example, in your code you may have:
 
 ```javascript
 module.exports = function (postService) {
@@ -172,12 +205,14 @@ There is no JavaScript file that contains the code for postService. The Pancakes
 this object on the fly based on the following:
 
 1. The current container name (i.e. api, webserver, batch, etc.) is passed into the Pancakes init()
-1. Look at the post.resource file and gets the default adapter. For example, 'persist'.
+1. Look at the post.resource.js file and gets the default adapter. For example, 'persist'.
 1. Get all the methods and params for those methods with the default adapter.
 1. The adapter mappings are passed into Pancakes init() to determine which implementation of the persist adapter
 is used. For example, mongo.persist.adapter.
-1. The adapter and the resource specific override are combined (ex. mongo.persist.adapter + post.persist.override)
+1. The adapter and the resource specific override are combined (ex. mongo.persist.adapter + post.persist.service)
+1. Filters used for a given service are gathered from the services/filters/filter.config.js file in your project.
 1. A new service object is built that takes the methods (as defined in the resource file) from the chosen adapter
+and override along with the appropriate filters.
 
 Some of the other things you can do include:
 
@@ -220,8 +255,8 @@ angular.module('someApp').factory(['Post', function (Post) {
 }]);
 ```
 
-While the server side 'Post' object wouldn't exist anywhere on the file system and is virtual, there would actually
-be a physical 'Post' object created for the client. The Pancakes build process would generate actual Angular
+While the server side 'Post' object wouldn't exist anywhere on the file system and is virtual, there actually
+is a physical 'Post' object created for the client. The Pancakes build process generates an Angular
 objects for all the services and models.
 
 There are two fundamental type of services: Simple Services and Aggregation Services. Simple Services
@@ -229,12 +264,6 @@ will only end up calling 1 adapter method. This should be the bulk of your trans
 that your data has been heavily de-normalized. The Aggreation Services, however, call multiple other services.
 In general, Pancakes prefers de-normalizing data so you can just make one call, but there will always be
 certain use cases for making multiple back and calls.
-
-Note that because service interfaces will be the same at any layer, this means that you could create an
-Aggregation Service that is run on the client or the server. In other words, either your client
-controller calls an Aggregation Service locally which subsequently makes multple
-calls out to the back end API. Or, the client controller makes on service call which
-goes to an Aggregation Service living within the API which then makes multiple Simple Service calls locally.
 
 The sections below provide more details on each of service layers.
 
@@ -247,7 +276,7 @@ For example, the following list are examples of mappings from adapter type to im
 
 * search : elasticsearch
 * realtime : firebase
-* email : mandrill
+* emailing : mandrill
 * analytics : google
 
 The service to use these adapters follows this format:
@@ -255,11 +284,9 @@ The service to use these adapters follows this format:
 {resource}{AdapterType}Service (ex. postSearchService, userRealtimeService, etc.)
 
 As mentioned earlier, simply referencing {resource}Service will point to the default adapter service.
-Within each adapter folder there are typically three files:
+Within each adapter folder there are typically two files:
 
 1. The adapter itself that contains the method implementations for a given interface (ex. create, update, remove, find)
-1. Filters that are specific to the adapter type, but NOT the adapter implementation. Filters are simply data in,
-data out either before or after an adapter method is called.
 1. Wrapper classes that simply provide sugar and utility functionality for a given external system. So, these would
 be lower level than the transactional method and closer tied to the target back end for that adapter.
 
@@ -268,11 +295,10 @@ be lower level than the transactional method and closer tied to the target back 
 Each resource typically has three types of code files:
 
 1. The resource definition itself which contains all the configuration for that resource.
-1. Filter overrides for a given adapter. For example, post.persist.filters would override the adapter level persist.filters.
-1. Adapter overrides. For example, post.persist.override would override the methods in mongo.persist.adapter.
+1. Adapter overrides. For example, post.persist.service would override the methods in mongo.persist.adapter.
+1. Aggregation services. For example. usernameService which uses the eventService and userService
 
-For format of the resource file is still currently in flux, but it should eventually be somewhat standardized for
-all Pancakes apps. Some examples of the type of data it contains:
+Some examples of the type of data in the resource file includes:
 
 * Default adapter for each potential container
 * Methods to be exposed in the service interface for each adapter
@@ -291,26 +317,80 @@ configuration and not code. Therefore, even the largest and most complex resourc
 over 400 - 500 lines. The goal is to eventually get the Pancakes framework and the adapter layer so strong that
 90% of non-UI development will only require a simple configuration change within the resource file.
 
-### propagators
+### reactors
 
-Data propagation is the asychronous replication and transformation of data from one location to another. There may
-be some uses cases where specific code is needed, but for the large majority of situations the generic propagator
-could be used to sync data. The further details of this layer are TBD.
+Data propagation is the asychronous replication and transformation of data from one location to another. All reactors
+listen for events on the eventBus and then perform some asynchronous operation or operations. For example, the
+audit reactor will watch for creation of update of data that is being audited and then copy that data to the audit
+table. A number of reactions have been made generic and are part of the generic reactor including:
 
-## Routing
+* newItem - Create new document in parent collection. For example, when a new tag is added to a question, that
+tag needs to be added to the tag table as well.
+* newListItem - Same as newItem except a new item in an array
+* rollup - New document added to collection and then copied over to another collection with the local DB.
+* replicate - New or updated data is copied to a remove repository.
 
-TBD; this will talk about the mechanism for how the server and client web UI will work off the same
-routing configuration. On the server side, Hapi will leverage this routing config. On the client side,
-the Angular UI Router will do the same.
+### filters
 
-## Controllers and Templates
+Manipulate data and/or detect issues on the away in or out. Examples include: ACL fitlers for security
+permissing enforcement, i18n fitlers for make sure internationalized verbiage is used, etc.
 
-TBD, but this is where we will talk about utilizing jeff.js to generate server and client side HTML
-from the same templates. I will not be putting a lot of thought to this until April, but Christian
-is working on the AngularJS plugin to jeff.js now.
+## Component 2 - apps
 
+An "app" for a pancakes project contains all the routing, css, html and UI controller logic for
+a website or application. The following sections detail some of the code that would be in an app folder.
 
+### Routing
 
+Each app has a {app name}.app.js file which contains routing information as well as some other config
+data used when the app first fires up. The client project middleware code is responsible for rating this
+data for the server side routing. The client transformer should generate code that pases the
+routing data into the a client side component which can load routing data. For AngularJS, the state
+loading process should ultimately use the Angular UI Router.
+
+### Layouts, Pages and Partials
+
+While these three concepts are similar they are 3 distinct entities in pancakes projects:
+
+* Layouts - No logic, used just for CSS and HTML of the layout for an app. There can be multiple layouts
+and/or nested layouts, but using more than one layout requires some manual effort to piece together.
+* Pages - A page is an UI element that is specifically tied to a URL route. A page lives within zero or
+more layouts and has zero or more partials within it. Pages have the following sections:
+    * LESS - A separate file contains the styles for the page. Everything else is in the same code file.
+    * initialModel - The initial data needed to render a page. A page will not render until this data is resolved
+    * serverPreProcessing - Server side code to do redirects or logic before the client loads
+    * view - The jeff.js view code (see below)
+    * clientController - Client side logic for the page
+* Partials - Partials are similar to pages except:
+    * modifyModel (modify existing model) instead of initialModel
+    * No serverPreProcessing
+    * Has scoping that will limit/alter the parent page model
+    * Can exist within a layout, page or another partial and can have child partials
+
+All three of these components utilize [Jeff.js, a JavaScript-based templating language](https://github.com/gethuman/jeff-core),
+for the view layer. This library can be extended to for different types of client side frameworks, but currently
+there is just one, [Jangular, which is an adapter for AngularJS](https://github.com/gethuman/jeff-jangular).
+
+### Utilities and Other Client Code
+
+All other code within the app layer is either generic utility code or client-only code. Utility code means
+simple data in/data out without any major dependencies. Client-only code is code that is only relevant to
+the client framework. For example, with Angular this may be something like a custom directive.
+
+## Component 3 - Transformers
+
+As explained in the pancakes framework section above, transformers convert a generic node-style module
+into a client side module. So, for example, there may be a transformer called
+ng.uipart.transformer which takes any page or partial module and uses ng.uipart.template to
+genereate client side controllers, directives and template cache as appropriate for each
+page and partial.
+
+## Component 4 - Middleware
+
+Middleware is technically not part of the pancakes framework, but it is worth noting that this is where
+client projects should store all their non-app, non-pancakes-specific web server middleware code.
+So, for example, if you use Hapi for your web server, all Hapi specific code would be under this folder
+and it would call out to pancakes services.
 
 
 

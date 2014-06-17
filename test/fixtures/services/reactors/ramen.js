@@ -6,6 +6,6 @@
  */
 
 module.exports = function() {
-	var Ramen = function() { } 
+	var Ramen = function() { };
 	return Ramen;
-}
+};

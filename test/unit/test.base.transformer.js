@@ -43,16 +43,14 @@
 
  	describe('getParamInfo()', function () {
  		it('should convert a list of params and return an object with converted values', function () {
- 			var params = ['foo', 'bar', 'boo', 'ramen', 'donut'];
+ 			var params = ['foo', 'bar', 'boo', 'donut'];
  			var alias = {
- 				ramen: 'angular',
  				donut: 'munchkins'
  			};
 
  			var expected = {
  				converted: ['foo', 'bar', 'boo', 'munchkins'],
- 				list: ['foo', 'bar', 'boo', 'donut'],
- 				ngrefs: ['ramen']
+ 				list: ['foo', 'bar', 'boo', 'donut']
  			};
 
  			var bt = new BaseTransformer();

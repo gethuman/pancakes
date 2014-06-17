@@ -97,6 +97,17 @@ describe('Unit tests for ' + name, function () {
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
+
+        it('should get parameters from multiple lines', function () {
+            var flapjack = function (one, two,
+                                     three) {
+                return one + two + three;
+            };
+            var expected = ['one', 'two', 'three'];
+            var actual = annotationHelper.getParameters(flapjack);
+            taste.should.exist(actual);
+            actual.should.deep.equal(expected);
+        });
     });
 });
 
