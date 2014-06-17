@@ -152,7 +152,7 @@ describe('Unit tests for ' + name, function () {
         });
 
         it('should return null if not exist and no error passed in', function () {
-            var factory = new Factory();
+            var factory = new Factory({});
             var actual = factory.loadIfExists('blah/asdf/asdfs', {}, null);
             taste.expect(actual).to.be.null;
         });
@@ -161,7 +161,7 @@ describe('Unit tests for ' + name, function () {
             var data = { some: 'data' };
             var injector = {
                 servicesDir: 'services',
-                rootDir: __dirname + '/../../fixtures',
+                rootDir: (__dirname + '/../../fixtures'),
                 loadModule: function () { return data; }
             };
             var factory = new Factory(injector);

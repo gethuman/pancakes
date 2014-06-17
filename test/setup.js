@@ -9,7 +9,6 @@
 process.chdir(__dirname + '/..');
 
 // set up code coverage
-
 //require('blanket')({
 //    'pattern': ['/pancakes/lib/']
 //});

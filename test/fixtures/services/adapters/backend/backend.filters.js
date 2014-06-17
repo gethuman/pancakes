@@ -18,8 +18,6 @@ module.exports = function (Q) {
         ];
     };
 
-
-
     BackendFilters.prototype.in1 = function (req) {
         return new Q(req);
     };
