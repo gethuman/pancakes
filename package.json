@@ -1,6 +1,6 @@
 {
   "name": "pancakes",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Flexible, SEO-friendly, full-stack JavaScript framework",
   "main": "lib/pancakes.js",
   "repository": {
@@ -17,13 +17,13 @@
   },
   "homepage": "https://github.com/gethuman/pancakes",
   "dependencies": {
-    "lodash": "~2.4.1",
+    "absurd": "^0.3.24",
     "dot": "~1.0.2",
-    "q": "^1.0.1",
     "eventemitter2": "^0.4.13",
     "gulp": "^3.6.0",
-    "jeff-core": "^0.1.11",
-    "absurd": "^0.3.24"
+    "jeff-core": "^0.1.12",
+    "lodash": "~2.4.1",
+    "q": "^1.0.1"
   },
   "devDependencies": {
     "gulp": "^3.7.0",
