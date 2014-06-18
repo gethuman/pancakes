@@ -47,6 +47,36 @@ describe('Unit tests for ' + name, function () {
             var promise = factory.validateRequestParams(req, resource, method);
             taste.eventuallySame(promise, undefined, done);
         });
+
+        it('should fail with adapter specific overwrites', function () {
+            var method = 'create';
+            var adapter = 'realtime';
+            var resource = {
+                params: {
+                    create: { required: ['data'], optional: ['some'] },
+                    'realtime.create': { required: ['one', 'two'] }
+                }
+            };
+            var factory = new Factory({});
+            var req = { data: 'blah', some: 'another' };
+            var promise = factory.validateRequestParams(req, resource, method, adapter);
+            promise.should.be.rejected;
+        });
+
+        it('should succeed with adapter specific overwrites', function (done) {
+            var method = 'create';
+            var adapter = 'realtime';
+            var resource = {
+                params: {
+                    create: { required: ['data'], optional: ['some'] },
+                    'realtime.create': { required: ['one', 'two'] }
+                }
+            };
+            var factory = new Factory({});
+            var req = { one: 'blah', two: 'blah2', some: 'another' };
+            var promise = factory.validateRequestParams(req, resource, method, adapter);
+            taste.eventuallySame(promise, undefined, done);
+        });
     });
 
     describe('emit()', function () {

@@ -392,5 +392,12 @@ client projects should store all their non-app, non-pancakes-specific web server
 So, for example, if you use Hapi for your web server, all Hapi specific code would be under this folder
 and it would call out to pancakes services.
 
+# Resource Spec
+
+A central piece of pancakes is the resource file. It contains many different configuration
+options that are extremely powerful. This section goes over the full spec.
+
+...mention how you can override params with an adapter specific params...
+
 
 
