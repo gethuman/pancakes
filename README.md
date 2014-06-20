@@ -29,7 +29,7 @@ This section goes over the code in the pancakes framework and how it is used. Wh
 keep in mind that there is the framework itself (which this section goes over) and then there are
 the projects that use the framework (described in the Components section further down).
 
-## Framework 1 - Dependency Injection
+## Dependency Injection
 
 One of the core pieces of Pancakes is the Dependency Injector. All Pancakes code (event client side code) is
 written "node style" (i.e. module.exports). Normally dependencies in Node.js are pulled in
@@ -141,14 +141,14 @@ different sources. Note: while the general application of annotations are very u
 when you specifically try to do something like this above because the different objects injected on the client
 and server could cause the code to behave in different ways.
 
-## Framework 2 - Transformer
+## Transformer
 
 The pancakes framework will take generic modules written for pancakes and convert them into client side
 code using a transformer. Currently most of the transformer code is project specific so it will reside within
 the client project, however, pancakes has a base transformer class that contains the core utility methods
 needed to construct a transformer.
 
-## Framework 3 - Utilities
+## Utilities
 
 Finally within the pancakes framework there are a couple utilities including:
 
@@ -162,7 +162,7 @@ Finally within the pancakes framework there are a couple utilities including:
 When you create a project that uses the pancakes framework it has the following components. Some of these componets
 are a requirement whenever you use Pancakes, but some of it is just best practice.
 
-## Component 1 - Services
+## Services
 
 At a high level, the idea is to create an ulta DRY business logic layer that can be used at **ALL** levels of
 your system (i.e. API, web server, web client, browser, hardware integrated circuits, etc.). There are three
@@ -335,7 +335,7 @@ tag needs to be added to the tag table as well.
 Manipulate data and/or detect issues on the away in or out. Examples include: ACL fitlers for security
 permissing enforcement, i18n fitlers for make sure internationalized verbiage is used, etc.
 
-## Component 2 - apps
+## apps
 
 An "app" for a pancakes project contains all the routing, css, html and UI controller logic for
 a website or application. The following sections detail some of the code that would be in an app folder.
@@ -377,7 +377,7 @@ All other code within the app layer is either generic utility code or client-onl
 simple data in/data out without any major dependencies. Client-only code is code that is only relevant to
 the client framework. For example, with Angular this may be something like a custom directive.
 
-## Component 3 - Transformers
+## Transformers
 
 As explained in the pancakes framework section above, transformers convert a generic node-style module
 into a client side module. So, for example, there may be a transformer called
@@ -385,7 +385,7 @@ ng.uipart.transformer which takes any page or partial module and uses ng.uipart.
 genereate client side controllers, directives and template cache as appropriate for each
 page and partial.
 
-## Component 4 - Middleware
+## Middleware
 
 Middleware is technically not part of the pancakes framework, but it is worth noting that this is where
 client projects should store all their non-app, non-pancakes-specific web server middleware code.
@@ -395,9 +395,200 @@ and it would call out to pancakes services.
 # Resource Spec
 
 A central piece of pancakes is the resource file. It contains many different configuration
-options that are extremely powerful. This section goes over the full spec.
+options that are extremely powerful. Below is an example of a configuration file that contains
+brief descriptions of what each value is used for.
 
-...mention how you can override params with an adapter specific params...
+```javascript
+module.exports = function (_, fieldsets) {
+    return {
 
+        // the name will be the name of the database collection as well as the name of the API resource
+        name: 'resourceName',
+
+        // this flag can be used to indicate that changes should be kept in an audit table
+        // this is an example of a custom attribute, however, because you would have to write the
+        // code to save audit information yourself. pancakes just gives you the hooks to know when
+        // something has changed
+        audit: false,
+
+        // default adapters for different containers (ex for api container default adapter is persist)
+        adapters: {
+            api:        'persist',  // so, within the API server, the persist adapter is used for this resource
+            batch:      'persist',
+            webserver:  'restapi',  // on the web server or in the browser, a restful API call is made
+            browser:    'restapi'
+        },
+
+        // each adapter has a set of methods that can be exposed
+        methods: {
+            persist:    ['find', 'findById', 'create', 'update', 'remove'],
+            restapi:    ['find', 'findById', 'create', 'update', 'remove'],
+            realtime:   ['save', 'remove'],
+            search:     ['save', 'find', 'remove']
+        },
+
+        // for each method, there are required and options params
+        params: {
+            find:               { required: ['where'], optional: ['select', 'skip', 'limit', 'sort', 'findOne'] },
+            'batch.find':       { required: ['where'] },    // this is an override of find() for the batch adapter
+            findById:           { required: ['_id'], optional: ['select'] },
+            create:             { required: ['data'] },
+            update:             { eitheror: ['where', '_id'], required: ['data'], optional: ['select', 'multi', 'noaudit'] },
+            remove:             { optional: ['host', 'token', 'url', 'data', 'multi', '_id', 'where'] }
+        },
+
+        // this defines the mapping from API endpoint to the service methods
+        // the API middleware layer will automatically create endpoints based off of this
+        api: {
+            GET: {
+                '/posts':       'find',
+                '/posts/{_id}': 'findById'
+            },
+            POST: {
+                '/posts':       'create'
+            },
+            PUT: {
+                '/posts/{_id}': 'update'
+            },
+            DELETE: {
+                '/posts/{_id}': 'remove'
+            }
+        },
+
+        // database schema; for mongo, uses mongoose syntax
+        fields: _.extend({}, fieldsets.page, fieldsets.workflow, {
+            title: String
+
+            // other field definitions (for mongo adapter, follows mongoose syntax)
+        }),
+
+        // database indexes (for mongo, in mongoose syntax)
+        indexes: [
+            {
+                fields:     { modifyDate: 1, type: 1 },
+                options:    { name: 'modifyDate_1_type_1' }
+            }
+        ],
+
+        // security restrictions on a method by method basis (using fakeblock.js syntax)
+        acl: {
+            create: {
+                access:             ['admin', 'user', 'visitor'],
+                data: {
+                    restricted: {
+                        user:           ['answers', 'comments'],
+                        visitor:        ['answers', 'comments']
+                    }
+                },
+                values: {
+                    restricted: {
+                        visitor:    { type: ['question', 'answer', 'comment' ] }
+                    }
+                }
+            },
+            find: {
+                access:             ['admin', 'user', 'visitor'],
+                select: {
+                    restricted: {
+                        user:       ['author', 'modifyUserId', 'modifyUserType'],
+                        visitor:    ['author', 'modifyUserId', 'modifyUserType']
+                    },
+                    'default': {
+                        user:       ['-author', '-modifyUserId', '-modifyUserType'],
+                        visitor:    ['-author', '-modifyUserId', '-modifyUserType']
+                    }
+                },
+                where: {
+                    allowed: {
+                        allroles:   ['_id', 'parentId', 'createUserId', 'title', 'type',
+                            'status', 'match', 'urlId', 'tags', 'company', 'offeringName',
+                            'companySlug', 'offeringSlug', 'tags.slug']
+                    }
+                },
+                sort: {
+                    allowed: {
+                        allroles:   ['createDate', 'stats.votes.sum']
+                    }
+                }
+            },
+            update: {
+                access:             ['admin', 'user', 'visitor'],
+                where: {
+                    onlyMine: {
+                        roles:      ['user', 'visitor'],
+                        field:      'createUserId'
+                    },
+                    allowed: {
+                        allroles:   ['_id', 'createUserId'],
+                        admin:      ['_id', 'parentId', 'createUserId', 'title']
+                    }
+                },
+                data: {
+                    restricted: {
+                        user:           ['answers', 'comments', 'urlId'],
+                        visitor:        ['answers', 'comments', 'urlId']
+                    }
+                }
+            },
+            remove: {
+                access:             ['admin', 'user', 'visitor'],
+                where: {
+                    onlyMine: {
+                        roles:      ['user', 'visitor'],
+                        field:      'createUserId'
+                    }
+                }
+            }
+        },
+
+        // schema for search (if ElasticSearch adapter, uses ES format for type mappings)
+        search: {
+            types:  ['sometype'],
+            fields: {
+                type: { type: 'string', index: 'not_analyzed' }
+            }
+        },
+
+        // this defines how data is copied to other data sources
+        reactions: [
+            {
+                trigger: {
+                    adapters:   ['persist'],
+                    methods:    ['update']
+                },
+                type:           'newItem',
+                target:         'company',
+                name:           'company',
+                slug:           'companySlug'
+            }
+        ],
+
+        // asychronous workflow tasks triggered when user clicks on link in email that goes
+        // to website; if link has token and task identifier, the middleware will
+        // pick it up and use this configuration to automatically call out to the target method
+        tasks: {
+            confirmUsername: {
+                method: 'confirmUsername',
+                params: ['token'],
+                notifySuccess: 'nameChange',    // note: look to notify.js for code that uses this on the client
+                notifyFailure: 'nameErr'
+            }
+        }
+
+        // define how/when data archived
+        archive: {
+            criteria: {
+                status: ['deleted', 'rejected']
+            },
+            daysSinceMod: 365
+        },
+
+        // define how/when data purged from the database
+        purge: {
+            daysSinceMod: 600
+        }
+    };
+};
+```
 
 
