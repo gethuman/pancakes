@@ -1,6 +1,8 @@
 pancakes
 ========
 
+**NOTE**: This library is still under development and is not ready for use in the wild yet. Stay tuned.
+
 Pancakes is a high-level, full-stack JavaScript framework. It was designed with the following goals in mind:
 
 1. **SEO** - Ability to pre-render content on the server, even for Single Page Apps. No need for PhantomJS or Fragment Spec hacks.
