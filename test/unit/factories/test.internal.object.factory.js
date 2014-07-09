@@ -124,6 +124,36 @@
 		});
 	});
 
+
+     describe('loadAppConfigs()', function () {
+         it('should return an empty object if the app config directory does not exist', function () {
+             var injector = {
+                 rootDir: __dirname + 'supercalafragalisticexpialadoshus'
+             };
+             var iof = new InternalObjectFactory(injector);
+
+             iof.should.exist;
+             (iof.loadAppConfigs()).should.be.empty;
+         });
+
+         it('should load all app configs into an object that can be injected', function () {
+             var opts = {
+                 rootDir: taste.fixturesDir,
+                 servicesDir: 'services'
+             };
+
+             var injector = new DependencyInjector(opts);
+             var iof 	 = new InternalObjectFactory(injector);
+
+             var actual = iof.loadAppConfigs();
+
+             iof.should.exist;
+             actual.should.be.an.Object;
+             actual.should.contain.keys('testapp');
+             (actual.testapp).should.be.an('Object');
+         });
+     });
+
 	describe('isCandidate()', function () {
 		it('should return the boolean value of an object if there is a match in internalObjects', function () {
 			var iof = new InternalObjectFactory();
