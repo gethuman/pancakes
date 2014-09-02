@@ -359,12 +359,12 @@ and/or nested layouts, but using more than one layout requires some manual effor
 * Pages - A page is an UI element that is specifically tied to a URL route. A page lives within zero or
 more layouts and has zero or more partials within it. Pages have the following sections:
     * LESS - A separate file contains the styles for the page. Everything else is in the same code file.
-    * initialModel - The initial data needed to render a page. A page will not render until this data is resolved
+    * model - The initial data needed to render a page. A page will not render until this data is resolved
     * serverPreProcessing - Server side code to do redirects or logic before the client loads
     * view - The jeff.js view code (see below)
-    * clientController - Client side logic for the page
+    * controller - Client side logic for the page
 * Partials - Partials are similar to pages except:
-    * modifyModel (modify existing model) instead of initialModel
+    * model returns a function that accepts the current model
     * No serverPreProcessing
     * Has scoping that will limit/alter the parent page model
     * Can exist within a layout, page or another partial and can have child partials
