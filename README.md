@@ -552,7 +552,7 @@ module.exports = function (_, fieldsets) {
         },
 
         // this defines how data is copied to other data sources
-        reactions: [
+        reactors: [
             {
                 trigger: {
                     adapters:   ['persist'],
