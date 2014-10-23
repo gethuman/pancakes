@@ -8,7 +8,7 @@ var Q       = require('q');
 var taste   = require('../../taste');
 var name    = 'factories/service.factory';
 var Factory = taste.target(name);
-var bus     = taste.target('event.bus');
+var bus     = taste.target('server.event.bus');
 
 describe('Unit tests for ' + name, function () {
 
@@ -18,7 +18,7 @@ describe('Unit tests for ' + name, function () {
             var resource = { test: true };
             var factory = new Factory({});
             var promise = factory.validateRequestParams(null, resource, method);
-            taste.eventuallySame(promise, undefined, done);
+            taste.eventuallyEqual(promise, undefined, done);
         });
 
         it('should be rejected if missing a required param', function () {
@@ -45,7 +45,7 @@ describe('Unit tests for ' + name, function () {
             var factory = new Factory({});
             var req = { data: 'blah', some: 'another' };
             var promise = factory.validateRequestParams(req, resource, method);
-            taste.eventuallySame(promise, undefined, done);
+            taste.eventuallyEqual(promise, undefined, done);
         });
 
         it('should fail with adapter specific overwrites', function () {
@@ -75,11 +75,11 @@ describe('Unit tests for ' + name, function () {
             var factory = new Factory({});
             var req = { one: 'blah', two: 'blah2', some: 'another' };
             var promise = factory.validateRequestParams(req, resource, method, adapter);
-            taste.eventuallySame(promise, undefined, done);
+            taste.eventuallyEqual(promise, undefined, done);
         });
     });
 
-    describe('emit()', function () {
+    describe('emitEvent()', function () {
         var oldLog;
 
         before(function () {
@@ -107,7 +107,7 @@ describe('Unit tests for ' + name, function () {
                 done();
             });
 
-            factory.emit(req, eventNameBase, null);
+            factory.emitEvent(req, eventNameBase, null);
         });
 
         it('should add an event for debug params', function (done) {
@@ -123,7 +123,7 @@ describe('Unit tests for ' + name, function () {
                 done();
             });
 
-            factory.emit(req, eventNameBase, debugParams);
+            factory.emitEvent(req, eventNameBase, debugParams);
         });
     });
 
@@ -145,7 +145,7 @@ describe('Unit tests for ' + name, function () {
             service.one.should.be.a('function');
 
             var promise = service.one();
-            taste.eventuallySame(promise, data, done);
+            taste.eventuallyEqual(promise, data, done);
         });
 
         it('should emit an event once the adapter method returns', function (done) {

@@ -10,10 +10,8 @@ var sinon           = require('sinon');
 var chai            = require('chai');
 var sinonChai       = require('sinon-chai');
 var chaiAsPromised  = require('chai-as-promised');
-var mochaAsPromised = require('mocha-as-promised');
 var path            = require('path');
 
-mochaAsPromised();
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
@@ -33,12 +31,12 @@ var all = function (promises, done) {
  * @param expected
  * @param done
  */
-var eventuallySame = function (promise, expected, done) {
+function eventuallyEqual(promise, expected, done) {
     all([
         promise.should.be.fulfilled,
         promise.should.eventually.deep.equal(expected)
     ], done);
-};
+}
 
 var target = function (relativePath) {
     return require('../lib/' + relativePath);
@@ -46,7 +44,7 @@ var target = function (relativePath) {
 
 module.exports = {
     all: all,
-    eventuallySame: eventuallySame,
+    eventuallyEqual: eventuallyEqual,
     target: target,
     fixturesDir: __dirname + '/fixtures',
     delim: path.normalize('/'),

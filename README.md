@@ -1,7 +1,10 @@
 pancakes
 ========
 
-**NOTE**: This library is still under development and is not ready for use in the wild yet. Stay tuned.
+**NOTE**: This library is still under development and is not ready for use in the wild yet. I will post
+instructions here once it is ready for anyone to try out.
+
+-----
 
 Pancakes is a high-level, full-stack JavaScript framework. It was designed with the following goals in mind:
 

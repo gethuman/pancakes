@@ -34,7 +34,9 @@ describe('Unit tests for ' + name, function () {
         it('should clear out the cache of DependencyInjector.factories', function() {
             pancakes.init({
                 rootDir: taste.fixturesDir,
-                servicesDir: 'services'
+                servicesDir: 'services',
+                clientPlugin: { init: function () {} },
+                serverPlugin: { init: function () {} }
             });
             pancakes.getService('blah');
             var injector = pancakes.getInjector();

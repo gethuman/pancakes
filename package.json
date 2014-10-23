@@ -1,6 +1,6 @@
 {
   "name": "pancakes",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Flexible, SEO-friendly, full-stack JavaScript framework",
   "main": "lib/pancakes.js",
   "repository": {
@@ -8,7 +8,10 @@
     "url": "git://github.com/gethuman/pancakes.git"
   },
   "keywords": [
-    "javascript"
+    "javascript",
+    "pancakes",
+    "isomorphic",
+    "dependency injector"
   ],
   "author": "Jeff Whelpley",
   "license": "MIT",
@@ -17,25 +20,23 @@
   },
   "homepage": "https://github.com/gethuman/pancakes",
   "dependencies": {
-    "absurd": "^0.3.24",
     "dot": "~1.0.2",
-    "eventemitter2": "^0.4.13",
-    "gulp": "^3.6.0",
-    "jeff-core": "^0.1.12",
+    "eventemitter2": "^0.4.14",
+    "jeff-core": "^0.1.13",
     "lodash": "~2.4.1",
+    "lru-cache": "^2.5.0",
     "q": "^1.0.1"
   },
   "devDependencies": {
-    "gulp": "^3.7.0",
-    "mocha": "~1.20.1",
-    "chai": "~1.9.1",
-    "sinon": "^1.10.2",
-    "sinon-chai": "^2.5.0",
-    "mocha-as-promised": "^2.0.0",
+    "gulp": "^3.8.8",
+    "mocha": "~1.21.5",
+    "chai": "~1.9.2",
+    "sinon": "^1.10.3",
+    "sinon-chai": "^2.6.0",
     "chai-as-promised": "^4.1.1",
     "blanket": "^1.1.6",
-    "gulp-mocha": "^0.4.1",
-    "gulp-watch": "^0.6.5",
-    "gulp-jshint": "^1.6.1"
+    "gulp-mocha": "^1.1.1",
+    "gulp-watch": "^1.1.0",
+    "gulp-jshint": "^1.8.5"
   }
 }
