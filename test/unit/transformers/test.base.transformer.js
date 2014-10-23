@@ -5,41 +5,15 @@
  *
  * Test runner for base.transformer.js
  */
-
-var name = 'base.transformer';
-var taste = require('../taste');
-var BaseTransformer = taste.target(name);
+var name 				= 'transformers/base.transformer';
+var taste 				= require('../../taste');
+var transformer			= taste.target(name);
+var _					= require('lodash');
+var annotationHelper	= taste.target('annotation.helper');
+var utensils			= taste.target('utensils');
 
 describe('Unit Test for ' + name, function () {
-	var transformDir = __dirname + '/../fixtures/templates';
-
-	describe('BaseTransformer() - Constructor', function () {
-		it('should construct a null template', function () {
-			var bt = new BaseTransformer(null);
-			taste.should.exist(bt);
-			bt.should.have.deep.property('template', null);
-		});
-
-		it('should construct a template for a given transformer', function () {
-			var templateName = 'test.params';
-			var bt = new BaseTransformer(null, transformDir, templateName);
-
-			taste.should.exist(bt);
-			bt.should.not.equal(null);
-			bt.should.have.property('template');
-			bt.template.should.be.an.instanceof(Function);
-		});
-
-		it('should constructa tempalte for a given transformer (using different tempalte from previous case)', function () {
-			var templateName = 'test.simple';
-			var bt = new BaseTransformer(null, transformDir, templateName);
-
-			taste.should.exist(bt);
-			bt.should.not.equal(null);
-			bt.should.have.property('template');
-			bt.template.should.be.an.instanceof(Function);
-		});
-	});
+	var transformDir = __dirname + '/../../fixtures/templates';
 
 	describe('loadUIPart()', function () {
 	    it('should load a UI part with a parent', function () {
@@ -64,9 +38,9 @@ describe('Unit Test for ' + name, function () {
 				},
 				getRootDir: function () { return ''; }
 			};
+			var context = { pancakes: pancakes };
 			var expected = { parent: 'other', foo: 'choo', two: 'moo', three: 'me' };
-			var bt = new BaseTransformer(pancakes);
-			var actual = bt.loadUIPart('foo', filePath);
+			var actual = transformer.loadUIPart.call(context, 'foo', filePath);
 			actual.should.deep.equal(expected);
 	    });
 	});
@@ -74,20 +48,28 @@ describe('Unit Test for ' + name, function () {
 	describe('getAppName()', function () {
 		it('should extract an app name from a path', function () {
 			var filePath = '/blah/app/foo/pages/something.page.js';
-			var ngPrefix = 'gh';
-			var expected = 'ghFooApp';
-
-			var bt = new BaseTransformer();
-			var actual = bt.getAppName(filePath, ngPrefix);
+			var expected = 'foo';
+			var actual = transformer.getAppName(filePath);
 			actual.should.equal(expected);
 		});
 	});
 
-	describe('getTemplate()', function () {
-	    it('should return a dot template', function () {
-	        var bt = new BaseTransformer();
-			var template = bt.getTemplate(__dirname + '/../fixtures/templates', 'test.params');
-			taste.should.exist(template);
+	describe('getAppModuleName()', function () {
+		it('should get an app module name', function () {
+			var ngPrefix = 'gh';
+			var appName = 'foo';
+			var context = { getCamelCase: utensils.getCamelCase };
+			var expected = 'ghFooApp';
+			var actual = transformer.getAppModuleName.call(context, ngPrefix, appName);
+			actual.should.equal(expected);
+		});
+	});
+
+	describe('setTemplate()', function () {
+	    it('should set a dot template', function () {
+			var context = {};
+			transformer.setTemplate.call(context, transformDir, 'test.params');
+			taste.should.exist(context.template);
 	    });
 	});
 
@@ -104,9 +86,7 @@ describe('Unit Test for ' + name, function () {
 				ngrefs: []
 			};
 
-			var bt = new BaseTransformer(null);
-			var actual = bt.getParamInfo(params, alias);
-
+			var actual = transformer.getParamInfo(params, alias);
 			actual.should.deep.equal(expected);
 		});
 	});
@@ -118,13 +98,13 @@ describe('Unit Test for ' + name, function () {
 
 				$scope.blah = one + three + four;
 			};
+			var context = _.extend({ getParamInfo: transformer.getParamInfo }, annotationHelper);
 			var expected = {
 				converted: ['two', 'three', 'four'],
 				list: ['one', 'three', 'four'],
 				ngrefs: []
 			};
-			var bt = new BaseTransformer();
-			var actual = bt.getFilteredParamInfo(flapjack, null);
+			var actual = transformer.getFilteredParamInfo.call(context, flapjack, null);
 			taste.should.exist(actual);
 			actual.should.deep.equal(expected);
 	    });
@@ -134,29 +114,21 @@ describe('Unit Test for ' + name, function () {
 		it('should return the entire string if it cant find a opening/closing curly in the string', function () {
 			var flapjack = 'FooBarBooRamenMunchkinDonutWorldCup';
 			var expected = 'FooBarBooRamenMunchkinDonutWorldCup';
-
-			var bt = new BaseTransformer(null);
-			var actual = bt.getModuleBody(flapjack);
-
+			var actual = transformer.getModuleBody(flapjack);
 			actual.should.equal(expected);
 		});
 
 		it('should extract everything inside the curly brackets of a module without function declaration', function () {
 			var flapjack = 'Everything inside of the curly brackets {GetHuman is frickin awesome} will be extracted';
 			var expected = 'GetHuman is frickin awesome';
-
-			var bt = new BaseTransformer(null);
-			var actual = bt.getModuleBody(flapjack);
-
+			var actual = transformer.getModuleBody(flapjack);
 			actual.should.equal(expected);
 		});
 
 		it('should replace new line character with a new line + tab character', function () {
 			var flapjack = 'function getHuman() {\nvar latePenalty = munchkin(25 Count)}';
 			var expected = '\n\tvar latePenalty = munchkin(25 Count)';
-
-			var bt = new BaseTransformer(null);
-			var actual = bt.getModuleBody(flapjack);
+			var actual = transformer.getModuleBody(flapjack);
 			actual.should.equal(expected);
 		});
 	});

@@ -26,7 +26,6 @@
 	 		iof.should.have.deep.property('internalObjects.resources', true);
 	 		iof.should.have.deep.property('internalObjects.reactors', true);
 	 		iof.should.have.deep.property('internalObjects.adapters', true);
-	 		(iof.internalObjects.BaseTransformer).should.be.an.instanceof(Function);
  		});
  	});
 

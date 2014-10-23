@@ -35,8 +35,8 @@ describe('Unit tests for ' + name, function () {
             pancakes.init({
                 rootDir: taste.fixturesDir,
                 servicesDir: 'services',
-                clientPlugin: { init: function () {} },
-                serverPlugin: { init: function () {} }
+                clientPlugin: function () {},
+                serverPlugin: function () {}
             });
             pancakes.getService('blah');
             var injector = pancakes.getInjector();
