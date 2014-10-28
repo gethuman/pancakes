@@ -4,9 +4,9 @@
  *
  * Unit tests for the service factory
  */
-var taste = require('../../taste');
-var name = 'factories/default.factory';
-var DefaultFactory = taste.target(name);
+var taste           = require('taste');
+var name            = 'factories/default.factory';
+var DefaultFactory  = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
     describe('isCandidate()', function () {

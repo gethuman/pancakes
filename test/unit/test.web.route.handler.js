@@ -4,7 +4,7 @@
  *
  *
  */
-var taste   = require('../taste');
+var taste   = require('taste');
 var name    = 'web.route.handler';
 var handler = taste.target(name);
 

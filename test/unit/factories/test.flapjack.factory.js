@@ -4,8 +4,8 @@
  *
  * Unit tests for the service factory
  */
-var taste = require('../../taste');
-var name = 'factories/flapjack.factory';
+var taste   = require('taste');
+var name    = 'factories/flapjack.factory';
 var Factory = taste.target(name);
 
 describe('Unit tests for ' + name, function () {

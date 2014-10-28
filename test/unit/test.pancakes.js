@@ -8,16 +8,16 @@
  * Unit tests for the main pancakes module
  */
 var name     = 'pancakes';
-var taste    = require('../taste');
-var pancakes = taste.target(name); 
+var taste    = require('taste');
+var pancakes = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
 
     afterEach(function () { pancakes.destroy(); });
 
     describe('requireModule()', function () {
-        it('should throw an error if a filePath is not passed in', function () {  
-            pancakes.init({});      
+        it('should throw an error if a filePath is not passed in', function () {
+            pancakes.init({});
             var fn = function () { pancakes.requireModule('', false); };
             fn.should.throw(Error);
         });
@@ -34,7 +34,7 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
-    describe('cook()', function () { 
+    describe('cook()', function () {
         it('should throw an error if init is not called yet', function () {
             var fn = function () { pancakes.cook('something'); };
             fn.should.throw(Error);
@@ -43,7 +43,7 @@ describe('Unit tests for ' + name, function () {
         it('should load a node_modules lib', function () {
             pancakes.init({});
 
-            var path = pancakes.cook('absurd'); 
+            var path = pancakes.cook('gulp');
             taste.should.exist(path);
         });
     });
@@ -57,11 +57,11 @@ describe('Unit tests for ' + name, function () {
         it('should clear the cache for the injector and factories', function () {
             var opts = {
                 servicesDir: 'services',
-                rootDir: __dirname + '/../fixtures',
+                rootDir: __dirname + '/../fixtures'
             };
 
             pancakes.init(opts);
-            pancakes.getService('blah');    
+            pancakes.getService('blah');
             pancakes.clearCache();
 
             var injector = pancakes.getInjector();
@@ -80,7 +80,7 @@ describe('Unit tests for ' + name, function () {
 
             pancakes.init(opts);
             pancakes.getService('blah');
-           
+
             var injector = pancakes.getInjector();
             var cache = injector.flapjackFactory.cache;
 
@@ -99,7 +99,7 @@ describe('Unit tests for ' + name, function () {
 
             pancakes.init(opts);
             pancakes.getService('blah.js');
-           
+
             var injector = pancakes.getInjector();
             var cache = injector.flapjackFactory.cache;
 
@@ -118,7 +118,7 @@ describe('Unit tests for ' + name, function () {
 
             pancakes.init(opts);
             pancakes.getService('blahService.js');
-           
+
             var injector = pancakes.getInjector();
             var cache = injector.flapjackFactory.cache;
 
@@ -135,11 +135,11 @@ describe('Unit tests for ' + name, function () {
             pancakes.init({});
             pancakes.destroy();
             var injector = pancakes.getInjector();
-            taste.should.not.exist(injector);    
+            taste.should.not.exist(injector);
         });
     });
 
-    describe('getInjector()', function () { 
+    describe('getInjector()', function () {
         it('should return the injector', function () {
             pancakes.init({});
             var injector = pancakes.getInjector();

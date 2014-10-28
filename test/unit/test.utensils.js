@@ -4,7 +4,7 @@
  *
  * Unit tests for the pancakes utils
  */
-var taste   = require('../taste');
+var taste   = require('taste');
 var name    = 'utensils';
 var utils   = taste.target(name);
 var Q       = require('q');

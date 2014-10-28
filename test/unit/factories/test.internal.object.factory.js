@@ -5,29 +5,29 @@
  * Date: 6/12/2014
  *
  * Description: Test cases for internal.object.factory.js
- * 
+ *
  */
+var name    = 'factories/internal.object.factory';
+var taste   = require('taste');
+var InternalObjectFactory = taste.target(name);
+var DependencyInjector = require('../../../lib/dependency.injector');
+var fixturesDir = __dirname + '/../../fixtures';
 
- var name    = 'factories/internal.object.factory';
- var taste   = require('../../taste');
- var InternalObjectFactory = taste.target(name);
- var DependencyInjector = require('../../../lib/dependency.injector');
+describe('Unit tests for ' + name, function () {
 
- describe('Unit tests for ' + name, function () {
+	describe('InternalObjectFactory() - Constructor', function () {
+		it('should construct a InternalObjectFactory with a given injector', function () {
+			var injector = { foo: 'bar', world: 'cup' };
+			var iof = new InternalObjectFactory(injector);
 
- 	describe('InternalObjectFactory() - Constructor', function () {
- 		it('should construct a InternalObjectFactory with a given injector', function () {
-	 		var injector = { foo: 'bar', world: 'cup' };
-	 		var iof 	 = new InternalObjectFactory(injector);
-
-	 		iof.should.exist;
-	 		iof.should.have.deep.property('injector.foo', 'bar') 	;		
-	 		iof.should.have.deep.property('injector.world', 'cup');
-	 		iof.should.have.deep.property('internalObjects.resources', true);
-	 		iof.should.have.deep.property('internalObjects.reactors', true);
-	 		iof.should.have.deep.property('internalObjects.adapters', true);
- 		});
- 	});
+			iof.should.exist;
+			iof.should.have.deep.property('injector.foo', 'bar');
+			iof.should.have.deep.property('injector.world', 'cup');
+			iof.should.have.deep.property('internalObjects.resources', true);
+			iof.should.have.deep.property('internalObjects.reactors', true);
+			iof.should.have.deep.property('internalObjects.adapters', true);
+		});
+	});
 
 	describe('loadResources()', function () {
 		it('should return an empty object if the resource directory does not exist', function () {
@@ -42,8 +42,8 @@
 
 		it('should load all resources into an object that can be injected', function () {
 			var opts = {
-				rootDir: taste.fixturesDir, 
-				servicesDir: 'services',
+				rootDir: fixturesDir,
+				servicesDir: 'services'
 			};
 			var expected = {
 				blah: {
@@ -55,15 +55,16 @@
 				foo: {},
 				man: {}
 			};
-			var injector = new DependencyInjector(opts); 
-			var iof    	 = new InternalObjectFactory(injector);
-			var actual = iof.loadResources();
+
+			var injector	= new DependencyInjector(opts);
+			var iof			= new InternalObjectFactory(injector);
+			var actual		= iof.loadResources();
 
 			iof.should.exist;
 			actual.should.deep.equal(expected);
 		});
 	});
-	
+
 	describe('loadAdapters()', function () {
 		it('should return an empty object if the adapter directory does not exist', function () {
 			var injector = {
@@ -72,24 +73,24 @@
 
 			};
 			var iof = new InternalObjectFactory(injector);
-			
+
 			(iof.loadAdapters()).should.be.empty;
 		});
 
 		it('should load all adapters into an object that can be injected', function () {
 			var opts = {
-				rootDir: taste.fixturesDir,
+				rootDir: fixturesDir,
 				servicesDir : 'services',
 				adapterMap: { backend: 'test', repo: 'solr' }
 			};
 
-			var injector = new DependencyInjector(opts);
-			var iof 	 = new InternalObjectFactory(injector);
-			var actual = iof.loadAdapters();
+			var injector	= new DependencyInjector(opts);
+			var iof			= new InternalObjectFactory(injector);
+			var actual		= iof.loadAdapters();
 
 			iof.should.exist;
-			(actual.TestBackendAdapter).should.be.an.instanceof(Function);			
-			(actual.SolrRepoAdapter).should.be.empty;	
+			(actual.TestBackendAdapter).should.be.an.instanceof(Function);
+			(actual.SolrRepoAdapter).should.be.empty;
 
 		});
 	});
@@ -107,7 +108,7 @@
 
 		it('should load all reactors into an object that can be injected', function () {
 			var opts = {
-				rootDir: taste.fixturesDir,
+				rootDir: fixturesDir,
 				servicesDir: 'services'
 			};
 
@@ -137,7 +138,7 @@
 
          it('should load all app configs into an object that can be injected', function () {
              var opts = {
-                 rootDir: taste.fixturesDir,
+                 rootDir: fixturesDir,
                  servicesDir: 'services'
              };
 
@@ -156,7 +157,7 @@
 	describe('isCandidate()', function () {
 		it('should return the boolean value of an object if there is a match in internalObjects', function () {
 			var iof = new InternalObjectFactory();
-			(iof.isCandidate('resources')).should.be.true;	
+			(iof.isCandidate('resources')).should.be.true;
 		});
 	});
 
@@ -179,7 +180,7 @@
 
 		it('should load the resources captured inside the injector', function () {
 			var opts = {
-				rootDir: taste.fixturesDir,
+				rootDir: fixturesDir,
 				serviceDir: 'services'
 			};
 			var injector = new DependencyInjector(opts);
@@ -196,13 +197,13 @@
 				man: {}
 			};
 
-			var actual = iof.create('resources'); 
+			var actual = iof.create('resources');
 			actual.should.deep.equal(expected);
 		});
 
 		it('should load the reactors captured inside the injector', function () {
 			var opts = {
-				rootDir: taste.fixturesDir,
+				rootDir: fixturesDir,
 				serviceDir: 'services',
 				adapterMap: { backend: 'test', repo: 'solr' }
 			};
@@ -219,7 +220,7 @@
 
 		it('should load the adapters captured inside the injector', function () {
 			var opts = {
-				rootDir: taste.fixturesDir,
+				rootDir: fixturesDir,
 				serviceDir: 'services',
 				adapterMap: { backend: 'test', repo: 'solr' }
 			};
@@ -228,9 +229,9 @@
 			var iof 	 = new InternalObjectFactory(injector);
 
 			var actual = iof.create('adapters');
-			
+
 			iof.should.exist;
-			(actual.TestBackendAdapter).should.be.an.instanceof(Function);	
+			(actual.TestBackendAdapter).should.be.an.instanceof(Function);
 			taste.should.not.exist(actual.SolrRep);
 		});
 	});

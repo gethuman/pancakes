@@ -4,13 +4,14 @@
  *
  * Unit tests for the client.generator
  */
-var taste = require('../../taste');
+var taste = require('taste');
 var name = 'factories/model.factory';
 var Factory = taste.target(name);
+var fixturesDir = __dirname + '/../../fixtures';
 
 describe('Unit tests for ' + name, function () {
     var injector = {
-        rootDir: taste.fixturesDir,
+        rootDir: fixturesDir,
         servicesDir: 'services',
         loadModule: function () { return 'hello, world'; }
     };
@@ -25,7 +26,7 @@ describe('Unit tests for ' + name, function () {
 
         it('should load all the resources in the fixtures', function () {
             injector = {
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 servicesDir: 'services',
                 loadModule: function () { return 'hello, world'; }
             };
@@ -86,7 +87,7 @@ describe('Unit tests for ' + name, function () {
 
         it('should get class that has service functions', function () {
             injector = {
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 servicesDir: 'services',
                 loadModule: function (path) {
                     if (path === 'blahService') {
@@ -121,7 +122,7 @@ describe('Unit tests for ' + name, function () {
 
         it('should take data and use a mixin when newing it up', function () {
             injector = {
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 servicesDir: 'services',
                 loadModule: function (path) {
                     if (path === 'blahService') {

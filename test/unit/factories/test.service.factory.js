@@ -5,10 +5,11 @@
  * Unit tests for the service factory
  */
 var Q       = require('q');
-var taste   = require('../../taste');
+var taste   = require('taste');
 var name    = 'factories/service.factory';
 var Factory = taste.target(name);
 var bus     = taste.target('server.event.bus');
+var fixturesDir = __dirname + '/../../fixtures';
 
 describe('Unit tests for ' + name, function () {
 
@@ -216,7 +217,7 @@ describe('Unit tests for ' + name, function () {
                 resourceName: 'post'
             };
             var injector = {
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 servicesDir: 'services',
                 loadModule: function (modulePath) {
                     if (modulePath.indexOf('test') >= 0) {
@@ -241,7 +242,7 @@ describe('Unit tests for ' + name, function () {
                 resourceName: 'blah'
             };
             var injector = {
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 servicesDir: 'services',
                 loadModule: function (modulePath) {
                     if (modulePath.indexOf('solr') >= 0) {
@@ -272,7 +273,7 @@ describe('Unit tests for ' + name, function () {
         it('should load the resource module if it is valid', function () {
             var serviceInfo = { resourceName: 'blah' };
             var injector = {
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 servicesDir: 'services',
                 loadModule: taste.spy()
             };
@@ -337,7 +338,7 @@ describe('Unit tests for ' + name, function () {
             var serviceName = 'blahBackendService';
             var injector = {
                 adapterMap: { backend: 'test' },
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 servicesDir: 'services',
                 loadModule: function (name) {
                     if (name.indexOf('blah.resource') >= 0) {
@@ -364,12 +365,12 @@ describe('Unit tests for ' + name, function () {
             var actual = factory.isCandidate('something/foo');
             actual.should.equal(false);
         });
-        
+
         it('should return false if the name does not have Service', function () {
             var actual = factory.isCandidate('somethinyo');
             actual.should.equal(false);
         });
-        
+
         it('should return true if there is no slash and the name contains Service', function () {
             var actual = factory.isCandidate('someService');
             actual.should.equal(true);

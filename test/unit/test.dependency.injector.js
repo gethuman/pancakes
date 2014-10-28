@@ -4,16 +4,18 @@
  *
  * Unit tets for the dependancy injector
  */
-var taste = require('../taste');
-var name = 'dependency.injector';
-var pancakes = require('../../lib/pancakes');
-var Injector = taste.target(name);
+var taste       = require('taste');
+var name        = 'dependency.injector';
+var pancakes    = require('../../lib/pancakes');
+var fixturesDir = __dirname + '/../fixtures';
+var Injector    = taste.target(name);
 var injector;
 
 describe('Unit tests for ' + name, function () {
+
     beforeEach(function () {
         injector = new Injector({
-            rootDir: taste.fixturesDir,
+            rootDir: fixturesDir,
             preload: 'flapjacks',
             adapterMap: {
                 backend: 'test'
@@ -30,10 +32,10 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
-    describe('clearCache()', function() {
+    describe('clearCache()', function () {
         it('should clear out the cache of DependencyInjector.factories', function() {
             pancakes.init({
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 servicesDir: 'services',
                 clientPlugin: function () {},
                 serverPlugin: function () {}
@@ -49,7 +51,7 @@ describe('Unit tests for ' + name, function () {
     describe('loadMappings()', function () {
         it('should return empty object if no mappsings', function () {
             var expected = {};
-            var actual = injector.loadMappings(taste.fixturesDir, null);
+            var actual = injector.loadMappings(fixturesDir, null);
             taste.should.exist(actual);
             actual.should.deep.equal(expected);
         });
@@ -66,7 +68,7 @@ describe('Unit tests for ' + name, function () {
                 Three: 'mappings/subdir/three',
                 Four: 'mappings/subdir/four'
             };
-            var actual = injector.loadMappings(taste.fixturesDir, [dir]);
+            var actual = injector.loadMappings(fixturesDir, [dir]);
             actual.should.deep.equal(expected);
         });
 
@@ -82,7 +84,7 @@ describe('Unit tests for ' + name, function () {
                 Three: 'mappings/subdir/three',
                 Four: 'mappings/subdir/four'
             };
-            var actual = injector.loadMappings(taste.fixturesDir, dir);
+            var actual = injector.loadMappings(fixturesDir, dir);
             actual.should.deep.equal(expected);
         });
     });
@@ -115,10 +117,10 @@ describe('Unit tests for ' + name, function () {
             var actual = injector.loadModule('flapjacks/annotation.module');
             actual.should.deep.equal(expected);
         });
-        
+
         it('should load a param module with config mapping', function () {
             injector = new Injector({
-                rootDir: taste.fixturesDir,
+                rootDir: fixturesDir,
                 preload: ['flapjacks']
             });
             var expected = require('../fixtures/flapjacks/simple.module')();
@@ -128,7 +130,7 @@ describe('Unit tests for ' + name, function () {
 
         it('should load blahService', function (done) {
             injector = new Injector({
-                rootDir:    taste.fixturesDir,
+                rootDir:    fixturesDir,
                 adapterMap: { backend: 'test', repo: 'solr' }
             });
             var actual = injector.loadModule('blahService');

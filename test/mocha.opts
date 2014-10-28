@@ -1,9 +1,0 @@
---slow 60
---growl
---ui bdd
---debug
---recursive
---bail
---reporter progress
---timeout 5000
---require test/setup

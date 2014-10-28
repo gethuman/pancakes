@@ -372,9 +372,9 @@ more layouts and has zero or more partials within it. Pages have the following s
     * Has scoping that will limit/alter the parent page model
     * Can exist within a layout, page or another partial and can have child partials
 
-All three of these components utilize [Jeff.js, a JavaScript-based templating language](https://github.com/gethuman/jeff-core),
+All three of these components utilize [Jyt, a JavaScript-based templating language](https://github.com/gethuman/jyt),
 for the view layer. This library can be extended to for different types of client side frameworks, but currently
-there is just one, [Jangular, which is an adapter for AngularJS](https://github.com/gethuman/jeff-jangular).
+there is just one, [Jangular, which is an adapter for AngularJS](https://github.com/gethuman/jangular).
 
 ### Utilities and Other Client Code
 

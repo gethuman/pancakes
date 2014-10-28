@@ -5,8 +5,8 @@
  *
  * Test runner for base.transformer.js
  */
-var name 				= 'transformers/base.transformer';
-var taste 				= require('../../taste');
+var name				= 'transformers/base.transformer';
+var taste				= require('taste');
 var transformer			= taste.target(name);
 var _					= require('lodash');
 var annotationHelper	= taste.target('annotation.helper');
@@ -44,7 +44,7 @@ describe('Unit Test for ' + name, function () {
 			actual.should.deep.equal(expected);
 	    });
 	});
-	
+
 	describe('getAppName()', function () {
 		it('should extract an app name from a path', function () {
 			var filePath = '/blah/app/foo/pages/something.page.js';
@@ -56,11 +56,11 @@ describe('Unit Test for ' + name, function () {
 
 	describe('getAppModuleName()', function () {
 		it('should get an app module name', function () {
-			var ngPrefix = 'gh';
+			var prefix = 'gh';
 			var appName = 'foo';
 			var context = { getCamelCase: utensils.getCamelCase };
 			var expected = 'ghFooApp';
-			var actual = transformer.getAppModuleName.call(context, ngPrefix, appName);
+			var actual = transformer.getAppModuleName.call(context, prefix, appName);
 			actual.should.equal(expected);
 		});
 	});

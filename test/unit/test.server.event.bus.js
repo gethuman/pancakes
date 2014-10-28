@@ -5,7 +5,7 @@
  * Unit tests for the event bus
  */
 var name     = 'server.event.bus';
-var taste    = require('../taste');
+var taste    = require('taste');
 var eventBus = taste.target(name);
 
 describe('Unit tests for ' + name, function () {
