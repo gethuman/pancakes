@@ -363,12 +363,12 @@ and/or nested layouts, but using more than one layout requires some manual effor
 more layouts and has zero or more partials within it. Pages have the following sections:
     * LESS - A separate file contains the styles for the page. Everything else is in the same code file.
     * model - The initial data needed to render a page. A page will not render until this data is resolved
-    * serverPreProcessing - Server side code to do redirects or logic before the client loads
+    * serverPreprocessing - Server side code to do redirects or logic before the client loads
     * view - The jeff.js view code (see below)
     * controller - Client side logic for the page
 * Partials - Partials are similar to pages except:
     * model returns a function that accepts the current model
-    * No serverPreProcessing
+    * No serverPreprocessing
     * Has scoping that will limit/alter the parent page model
     * Can exist within a layout, page or another partial and can have child partials
 
