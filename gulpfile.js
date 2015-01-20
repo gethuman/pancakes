@@ -10,6 +10,7 @@ var taste   = require('taste');
 taste.init({
     gulp:       gulp,
     rootDir:    __dirname + '/lib',
+    testDir:    __dirname + '/test',
     loadModule: require
 });
 

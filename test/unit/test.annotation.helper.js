@@ -33,6 +33,8 @@ describe('Unit tests for ' + name, function () {
     describe('getModuleInfo()', function () {
 
         it('should throw an error if there is invalid JSON', function () {
+            var log = console.log;
+            console.log = taste.spy();
             var flapjack = function () {
                 // @module({ invalid json here })
             };
@@ -40,6 +42,7 @@ describe('Unit tests for ' + name, function () {
                 helper.getModuleInfo(flapjack);
             };
             fn.should.throw(SyntaxError);
+            console.log = log;
         });
 
         it('should return back parsed JSON in annotation', function () {

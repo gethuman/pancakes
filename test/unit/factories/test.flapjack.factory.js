@@ -4,12 +4,12 @@
  *
  * Unit tests for the service factory
  */
-var taste   = require('taste');
-var name    = 'factories/flapjack.factory';
-var Factory = taste.target(name);
-
-describe('Unit tests for ' + name, function () {
-    
+//var taste   = require('taste');
+//var name    = 'factories/flapjack.factory';
+//var Factory = taste.target(name);
+//
+//describe('Unit tests for ' + name, function () {
+//
 //    describe('isCandidate()', function () {
 //        it('should return false if there is NOT a slash in the module path', function () {
 //            var factory = new Factory({});
@@ -23,69 +23,7 @@ describe('Unit tests for ' + name, function () {
 //            actual.should.equal(true);
 //        });
 //    });
-
-    describe('injectFlapjack()', function () {
-//        it('should simply call the flapjack with no params', function () {
-//            var factory = new Factory({});
-//            var data = 'hello';
-//            var flapjack = function () { return data; };
-//            var actual = factory.injectFlapjack(flapjack, null);
-//            taste.should.exist(actual);
-//            actual.should.equal(data);
-//        });
 //
-//        it('should call flapjack with the instantiated params', function () {
-//            var data = 'yoyo';
-//            var expected = 'yoyo|yoyo';
-//            var flapjack = function (foo, moo) { return foo + '|' + moo; };
-//            var injector = {
-//                loadModule: function () {
-//                    return data;
-//                }
-//            };
-//
-//            var factory = new Factory(injector);
-//            var actual = factory.injectFlapjack(flapjack, null);
-//            taste.should.exist(actual);
-//            actual.should.equal(expected);
-//        });
-//
-//        it('should use the param map from the injector', function () {
-//            var data = 'some/foo';
-//            var flapjack = function (foo) { return foo; };
-//            var injector = {
-//                loadModule: function (param) {
-//                    return param;
-//                },
-//                aliases: {
-//                    foo: data
-//                }
-//            };
-//
-//            var factory = new Factory(injector);
-//            var actual = factory.injectFlapjack(flapjack, null);
-//            taste.should.exist(actual);
-//            actual.should.equal(data);
-//        });
-
-        it('should use the param map from the annotation', function () {
-            var data = 'some/foo';
-            var flapjack = function (foo) {
-                // @module({ "server": { "foo": "some/foo" } })
-                return foo;
-            };
-            var injector = {
-                loadModule: function (param) {
-                    return param;
-                }
-            };
-
-            var factory = new Factory(injector);
-            var actual = factory.injectFlapjack(flapjack, null);
-            taste.should.exist(actual);
-            actual.should.equal(data);
-        });
-    });
 //
 //    describe('create()', function () {
 //        it('should return an object from cache', function () {
@@ -152,4 +90,4 @@ describe('Unit tests for ' + name, function () {
 //            factory.cache[data].should.equal(expected);
 //        });
 //    });
-});
+//});
