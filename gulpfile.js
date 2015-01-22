@@ -6,14 +6,8 @@
  */
 var gulp    = require('gulp');
 var taste   = require('taste');
+var batter  = require('batter');
 
-taste.init({
-    gulp:       gulp,
-    rootDir:    __dirname + '/lib',
-    testDir:    __dirname + '/test',
-    loadModule: require
-});
-
-gulp.task('default', ['jshint', 'test']);
+batter.whip(gulp, taste, {});
 
 
