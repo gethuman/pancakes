@@ -19,6 +19,7 @@ describe('Unit Test for ' + name, function () {
 	    it('should load a UI part with a parent', function () {
 	        var filePath = '/app/foo/pages/something.page.js';
 			var commonPath = '/app/common/pages/something.page.js';
+            var obj = { parent: 'other', foo: 'choo', two: 'moo', three: 'me' };
 			var pancakes = {
 				requireModule: function (name) {
 					if (name === commonPath) {
@@ -36,10 +37,13 @@ describe('Unit Test for ' + name, function () {
 						};
 					}
 				},
-				getRootDir: function () { return ''; }
+				getRootDir: function () { return ''; },
+                cook: function () {
+                    return obj;
+                }
 			};
 			var context = { pancakes: pancakes };
-			var expected = { parent: 'other', foo: 'choo', two: 'moo', three: 'me' };
+			var expected = obj;
 			var actual = transformer.loadUIPart.call(context, 'foo', filePath);
 			actual.should.deep.equal(expected);
 	    });

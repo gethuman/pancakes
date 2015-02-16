@@ -74,17 +74,6 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
-    describe('getPage()', function () {
-        it('should get a page from the fixtures', function () {
-            handler.init({ injector: injector1 });
-            var appName = 'testapp';
-            var pageName = 'testit';
-            var expected = { parent: 'testparent', another: true, blah: 'child', foo: 'choo' };
-            var actual = handler.getPage(appName, pageName);
-            actual.should.deep.equal(expected);
-        });
-    });
-    
     describe('getInitialModel()', function () {
         it('should return empty object if no model on the page', function () {
             handler.getInitialModel({}, {}).should.eventually.deep.equal({});
