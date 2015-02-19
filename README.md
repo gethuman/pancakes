@@ -13,26 +13,26 @@ Pancakes is a high-level, full-stack JavaScript framework. It was designed with 
 can be used at any layer. One common interface to multiple back ends. One unified Model object that
 can be used anywhere (including all validations).
 1. **Plugable Architecture** - Pancakes is not a web server framework. It is not a client side framework.
-It is built to integration with any other framework on the web server (ex. Koa, Hapi, etc.) or the
-client (ex. Angular, Backbone, etc.). Mix and match as you please!
+It is really just glue code that can be used to integrate several different frameworks together. So you
+could use React, Angular or Ember on the client and Express, Hapi or Koa on the server. Mix and match as you please!
 1. **Testing** - Make it easy to unit test any and every module in the same way. Ability to test
  client side code on the server.
 1. **Code Generation** - Heavy emphasis on auto generating scaffolding code and providing tools to
 make development easy.
 
-Although this framework is built for flexibility, it is opinionated. We will value making things
-simple over providing options.
+Although this library is built for flexibility, it is opinionated. We try to push opinions down to the adapters,
+but even the core glue code will not be suitable for every situation.
 
 We are still working on making this library awesome, but we would love to know if you are interested
 and would like to get involved. Hit me up on twitter @jeffwhelpley. This README goes over the pancakes
 framework and key concepts. If you would like a guide for actually using pancakes, go to
 the [pancakes generator](https://github.com/gethuman/generator-pancakes).
 
-# Pancakes Framework
+# Inside Pancakes
 
-This section goes over the code in the pancakes framework and how it is used. When reading this documentation
-keep in mind that there is the framework itself (which this section goes over) and then there are
-the projects that use the framework (described in the Components section further down).
+This section goes over the code in Pancakes and how it is used. When reading this documentation
+keep in mind that there is pancakes itself (which this section goes over) and then there are
+the projects that use Pancakes (described in the Components section further down).
 
 ## Dependency Injection
 
@@ -420,14 +420,14 @@ module.exports = function (_, fieldsets) {
         adapters: {
             api:        'persist',  // so, within the API server, the persist adapter is used for this resource
             batch:      'persist',
-            webserver:  'restapi',  // on the web server or in the browser, a restful API call is made
-            browser:    'restapi'
+            webserver:  'apiclient',  // on the web server or in the browser, a restful API call is made
+            browser:    'apiclient'
         },
 
         // each adapter has a set of methods that can be exposed
         methods: {
             persist:    ['find', 'findById', 'create', 'update', 'remove'],
-            restapi:    ['find', 'findById', 'create', 'update', 'remove'],
+            apiclient:    ['find', 'findById', 'create', 'update', 'remove'],
             realtime:   ['save', 'remove'],
             search:     ['save', 'find', 'remove']
         },
