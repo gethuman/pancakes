@@ -50,7 +50,7 @@ describe('Unit tests for ' + name, function () {
         eventBus.emit('some.event.other', data);
     });
 
-    describe('errorHandler()', function() {
+    describe('errorHandler()', function () {
         it('should allow us to override the default error handler', function (done) {
             var data = { something: 'other' };
 
@@ -63,43 +63,43 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
-    describe('addHandlers()', function() {
-        it('should throw an error if the options is empty', function() {
+    describe('addHandlers()', function () {
+        it('should throw an error if the options is empty', function () {
             var options = {};
-            var fn = function() {
+            var fn = function () {
                 eventBus.addHandlers(options);
             };
             fn.should.throw('Must have resources, adapters and methods specified in addHandlers');
         });
 
-        it('should throw an error if the options is empty', function() {
+        it('should throw an error if the options is empty', function () {
             var options = {
                 resource:   [],
                 adapters:   [],
                 methods:    []
             };
-            var fn = function() {
+            var fn = function () {
                 eventBus.addHandlers(options);
             };
             fn.should.throw('Must have resources, adapters and methods specified in addHandlers');
         });
 
-        it('should listen to a event if the option is a string', function() {
+        it('should listen to a event if the option is a string', function () {
             var data    = { Get: 'Human' };
             var options = 'foo.*.boo';
 
-            eventBus.addHandlers(options, function(actual) {
+            eventBus.addHandlers(options, function (actual) {
                 actual.should.deep.equal(data);
             });
 
             eventBus.emit('foo.is.boo', data);
         });
 
-        it('should listen to an event if the option is an array', function() {
+        it('should listen to an event if the option is an array', function () {
             var data    = { Haiku: 'Friday' };
             var options = [ 'rainday.ramen', 'world.cup', 'robin.*.persie'];
 
-            eventBus.addHandlers(options, function(actual) {
+            eventBus.addHandlers(options, function (actual) {
                 actual.should.deep.equal(data);
             });
 
@@ -109,7 +109,7 @@ describe('Unit tests for ' + name, function () {
         });
 
 
-        it('should listen to multiple events in options', function() {
+        it('should listen to multiple events in options', function () {
             var data    = { something: 'awesome' };
             var options = {
                 resources:  ['blah'],
@@ -117,8 +117,8 @@ describe('Unit tests for ' + name, function () {
                 methods:    ['bar', 'boo']
             };
 
-            eventBus.addHandlers(options, function(actual) {  
-                actual.should.deep.equal(data);                
+            eventBus.addHandlers(options, function (actual) {
+                actual.should.deep.equal(data);
             });
 
             eventBus.emit('blah.foo.bar', data);
