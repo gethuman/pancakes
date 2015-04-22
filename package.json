@@ -1,6 +1,6 @@
 {
   "name": "pancakes",
-  "version": "0.1.55",
+  "version": "0.1.62",
   "description": "Flexible, SEO-friendly, full-stack JavaScript framework",
   "main": "lib/pancakes.js",
   "repository": {
@@ -22,13 +22,13 @@
   "dependencies": {
     "dot": "~1.0.3",
     "eventemitter2": "^0.4.14",
-    "lodash": "~3.5.0",
-    "lru-cache": "^2.5.0",
+    "lodash": "~3.7.0",
+    "lru-cache": "^2.6.1",
     "q": "^1.2.0"
   },
   "devDependencies": {
-    "batter": "0.0.24",
+    "batter": "0.0.30",
     "gulp": "^3.8.11",
-    "taste": "^0.1.55"
+    "taste": "^0.1.59"
   }
 }
