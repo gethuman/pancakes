@@ -1,6 +1,6 @@
 {
   "name": "pancakes",
-  "version": "0.1.66",
+  "version": "0.1.67",
   "description": "Flexible, SEO-friendly, full-stack JavaScript framework",
   "main": "lib/pancakes.js",
   "repository": {
