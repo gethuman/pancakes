@@ -24,11 +24,11 @@
     "eventemitter2": "^0.4.14",
     "lodash": "~3.8.0",
     "lru-cache": "^2.6.3",
-    "q": "^1.4.0"
+    "q": "^1.4.1"
   },
   "devDependencies": {
-    "batter": "0.0.36",
+    "batter": "0.0.37",
     "gulp": "^3.8.11",
-    "taste": "^0.1.62"
+    "taste": "^0.1.63"
   }
 }
