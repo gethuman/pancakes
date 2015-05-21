@@ -22,13 +22,13 @@
   "dependencies": {
     "dot": "~1.0.3",
     "eventemitter2": "^0.4.14",
-    "lodash": "~3.8.0",
+    "lodash": "~3.9.1",
     "lru-cache": "^2.6.4",
     "q": "^1.4.1"
   },
   "devDependencies": {
-    "batter": "0.0.37",
+    "batter": "0.0.38",
     "gulp": "^3.8.11",
-    "taste": "^0.1.63"
+    "taste": "^0.1.64"
   }
 }
