@@ -8,7 +8,7 @@ instructions here once it is ready for anyone to try out.
 
 Pancakes is a high-level, full-stack JavaScript framework. It was designed with the following goals in mind:
 
-1. **SEO** - Ability to pre-render content on the server, even for Single Page Apps. No need for PhantomJS or Fragment Spec hacks.
+1. **UX** - Ability to pre-render content on the server, even for Single Page Apps. No need for PhantomJS or Fragment Spec hacks.
 1. **DRY** - One template that can be rendered on the client or server. One module that
 can be used at any layer. One common interface to multiple back ends. One unified Model object that
 can be used anywhere (including all validations).
