@@ -166,4 +166,24 @@ describe('Unit tests for ' + name, function () {
             actual.should.equal(expected);
         });
     });
+
+    describe('checksum()', function () {
+        it('should generate a checksum based off a string', function () {
+            var text = 'asdfsdfasd';
+            var expected = 1356269544;
+            var actual = utils.checksum(text);
+            actual.should.equal(expected);
+        });
+
+        it('should generate checksum for very large string', function () {
+            var text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            for (var i = 0; i < 1000; i++) {
+                text += 'asdfsdf';
+            }
+
+            var expected = 1138273122;
+            var actual = utils.checksum(text);
+            actual.should.equal(expected);
+        });
+    });
 });
