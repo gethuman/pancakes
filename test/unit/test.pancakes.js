@@ -10,6 +10,7 @@
 var name     = 'pancakes';
 var taste    = require('taste');
 var pancakes = taste.target(name);
+var path     = require('path');
 
 describe('Unit tests for ' + name, function () {
 
@@ -43,8 +44,8 @@ describe('Unit tests for ' + name, function () {
         it('should load a node_modules lib', function () {
             pancakes.init({});
 
-            var path = pancakes.cook('gulp');
-            taste.should.exist(path);
+            var filePath = pancakes.cook('gulp');
+            taste.should.exist(filePath);
         });
     });
 
@@ -57,7 +58,7 @@ describe('Unit tests for ' + name, function () {
         it('should clear the cache for the injector and factories', function () {
             var opts = {
                 servicesDir: 'services',
-                rootDir: __dirname + '/../fixtures'
+                rootDir: path.join(__dirname, '../fixtures')
             };
 
             pancakes.init(opts);
@@ -75,7 +76,7 @@ describe('Unit tests for ' + name, function () {
         it('should get the service for a given resource name', function () {
             var opts = {
                 servicesDir: 'services',
-                rootDir: __dirname + '/../fixtures'
+                rootDir: path.join(__dirname, '../fixtures')
             };
 
             pancakes.init(opts);
@@ -94,7 +95,7 @@ describe('Unit tests for ' + name, function () {
         it('should fix the resource name blah.js and get its service', function () {
             var opts = {
                 servicesDir: 'services',
-                rootDir: __dirname + '/../fixtures'
+                rootDir: path.join(__dirname, '../fixtures')
             };
 
             pancakes.init(opts);
@@ -113,7 +114,7 @@ describe('Unit tests for ' + name, function () {
         it('should fix the resource name blahService.js and get its service', function () {
             var opts = {
                 servicesDir: 'services',
-                rootDir: __dirname + '/../fixtures'
+                rootDir: path.join(__dirname, '../fixtures')
             };
 
             pancakes.init(opts);

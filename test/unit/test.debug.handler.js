@@ -5,6 +5,7 @@ var name    = 'debug.handler';
 var taste   = require('taste');
 var target  = taste.target(name);
 
+/* eslint no-console:0 */
 describe('unit ' + name, function () {
     describe('debugHandler()', function () {
         it('should write eventData to the console', function () {

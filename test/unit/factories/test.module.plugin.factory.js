@@ -4,7 +4,8 @@
 var name    = 'factories/module.plugin.factory';
 var taste   = require('taste');
 var Factory = taste.target(name);
-var fixturesDir = __dirname + '/../../fixtures';
+var path    = require('path');
+var fixturesDir = path.join(__dirname, '../../fixtures');
 
 describe('unit ' + name, function () {
     describe('loadModules()', function () {

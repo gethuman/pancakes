@@ -7,7 +7,8 @@
 var taste = require('taste');
 var name = 'factories/model.factory';
 var Factory = taste.target(name);
-var fixturesDir = __dirname + '/../../fixtures';
+var path = require('path');
+var fixturesDir = path.join(__dirname, '../../fixtures');
 
 describe('Unit tests for ' + name, function () {
     var injector = {
@@ -79,9 +80,9 @@ describe('Unit tests for ' + name, function () {
         it('should return an item from cache', function () {
             var factory = new Factory(injector);
             var data = { hello: 'world' };
-            var name = 'SomeName';
-            factory.cache[name] = data;
-            var actual = factory.create(name);
+            var testName = 'SomeName';
+            factory.cache[testName] = data;
+            var actual = factory.create(testName);
             actual.should.deep.equal(data);
         });
 
@@ -89,8 +90,8 @@ describe('Unit tests for ' + name, function () {
             injector = {
                 rootDir: fixturesDir,
                 servicesDir: 'services',
-                loadModule: function (path) {
-                    if (path === 'blahService') {
+                loadModule: function (modulePath) {
+                    if (modulePath === 'blahService') {
                         return {
                             create: function (val) { return val; },
                             update: function (val) { return val; }
@@ -124,8 +125,8 @@ describe('Unit tests for ' + name, function () {
             injector = {
                 rootDir: fixturesDir,
                 servicesDir: 'services',
-                loadModule: function (path) {
-                    if (path === 'blahService') {
+                loadModule: function (modulePath) {
+                    if (modulePath === 'blahService') {
                         return {
                             create: function (val) { return val; },
                             update: function (val) { return val; }

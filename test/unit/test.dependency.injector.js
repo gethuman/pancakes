@@ -5,9 +5,10 @@
  * Unit tets for the dependancy injector
  */
 var taste       = require('taste');
+var path        = require('path');
 var name        = 'dependency.injector';
 var pancakes    = require('../../lib/pancakes');
-var fixturesDir = __dirname + '/../fixtures';
+var fixturesDir = path.join(__dirname, '../fixtures');
 var Injector    = taste.target(name);
 var injector;
 
@@ -33,7 +34,7 @@ describe('Unit tests for ' + name, function () {
     });
 
     describe('clearCache()', function () {
-        it('should clear out the cache of DependencyInjector.factories', function() {
+        it('should clear out the cache of DependencyInjector.factories', function () {
             pancakes.init({
                 rootDir: fixturesDir,
                 servicesDir: 'services',
@@ -41,10 +42,10 @@ describe('Unit tests for ' + name, function () {
                 serverPlugin: function () {}
             });
             pancakes.getService('blah');
-            var injector = pancakes.getInjector();
-            injector.clearCache();
-            injector.should.have.property('flapjackFactory');
-            (injector.flapjackFactory.cache).should.be.empty;
+            var pancakesInjector = pancakes.getInjector();
+            pancakesInjector.clearCache();
+            pancakesInjector.should.have.property('flapjackFactory');
+            (pancakesInjector.flapjackFactory.cache).should.be.empty;
         });
     });
 

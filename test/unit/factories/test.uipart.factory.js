@@ -6,25 +6,26 @@
  */
 var name    = 'factories/uipart.factory';
 var taste   = require('taste');
+var path    = require('path');
 var Factory = taste.target(name);
 var factory = new Factory({
-    rootDir: __dirname + '/../../fixtures',
+    rootDir: path.join(__dirname, '../../fixtures'),
     require: require
 });
 
 describe('Unit tests for ' + name, function () {
     describe('isCandidate()', function () {
         it('should be a candidate if pages', function () {
-            var path = 'app/common/pages/something.page';
+            var filePath = 'app/common/pages/something.page';
             var expected = true;
-            var actual = factory.isCandidate(path);
+            var actual = factory.isCandidate(filePath);
             actual.should.equal(expected);
         });
 
         it('should not be a candidate if some other path', function () {
-            var path = 'app/common/styles/something.style';
+            var filePath = 'app/common/styles/something.style';
             var expected = false;
-            var actual = factory.isCandidate(path);
+            var actual = factory.isCandidate(filePath);
             actual.should.equal(expected);
         });
     });

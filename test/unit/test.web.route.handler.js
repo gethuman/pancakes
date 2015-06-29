@@ -7,10 +7,11 @@
 var taste   = require('taste');
 var name    = 'web.route.handler';
 var handler = taste.target(name);
+var path    = require('path');
 
 describe('Unit tests for ' + name, function () {
     var injector1 = {
-        rootDir: __dirname + '/../fixtures',
+        rootDir: path.join(__dirname, '../fixtures'),
         loadModule: function () {
             return { foo: { routes: [
                 { name: 'foo.home', urls: ['/'] },

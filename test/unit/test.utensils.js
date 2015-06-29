@@ -59,9 +59,9 @@ describe('Unit tests for ' + name, function () {
 
     describe('splitCamelCase()', function () {
         it('should split a camel case string into an array', function () {
-            var name = 'thisIsAtThing';
+            var testName = 'thisIsAtThing';
             var expected = ['this', 'is', 'at', 'thing'];
-            var actual = utils.splitCamelCase(name);
+            var actual = utils.splitCamelCase(testName);
             actual.should.deep.equal(expected);
         });
     });
@@ -176,7 +176,7 @@ describe('Unit tests for ' + name, function () {
         });
 
         it('should generate checksum for very large string', function () {
-            var text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var text = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             for (var i = 0; i < 1000; i++) {
                 text += 'asdfsdf';
             }

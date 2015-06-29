@@ -80,8 +80,8 @@ describe('Unit tests for ' + name, function () {
         it('should load filters from a mocked filter config', function () {
             var obj = { panmod: true };
             var injector = {
-                loadModule: function (name) {
-                    if (name === 'filterConfig') { return config; }
+                loadModule: function (moduleName) {
+                    if (moduleName === 'filterConfig') { return config; }
                     else { return obj; }
                 }
             };

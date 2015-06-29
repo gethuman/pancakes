@@ -8,6 +8,7 @@ var taste   = require('taste');
 var name    = 'annotation.helper';
 var helper  = taste.target(name);
 
+/* eslint no-console:0 */
 describe('Unit tests for ' + name, function () {
 
     describe('getAnnotationInfo()', function () {
@@ -113,6 +114,3 @@ describe('Unit tests for ' + name, function () {
         });
     });
 });
-
-
-

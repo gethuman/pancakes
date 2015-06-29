@@ -9,7 +9,8 @@ var taste   = require('taste');
 var name    = 'factories/service.factory';
 var Factory = taste.target(name);
 var bus     = taste.target('server.event.bus');
-var fixturesDir = __dirname + '/../../fixtures';
+var path    = require('path');
+var fixturesDir = path.join(__dirname, '../../fixtures');
 
 describe('Unit tests for ' + name, function () {
 
@@ -80,6 +81,7 @@ describe('Unit tests for ' + name, function () {
         });
     });
 
+    /* eslint no-console:0 */
     describe('emitEvent()', function () {
         var oldLog;
 
@@ -192,7 +194,7 @@ describe('Unit tests for ' + name, function () {
             var data = { some: 'data' };
             var injector = {
                 servicesDir: 'services',
-                rootDir: (__dirname + '/../../fixtures'),
+                rootDir: path.join(__dirname, '../../fixtures'),
                 loadModule: function () { return data; }
             };
             var factory = new Factory(injector);
@@ -341,8 +343,8 @@ describe('Unit tests for ' + name, function () {
                 adapterMap: { backend: 'test' },
                 rootDir: fixturesDir,
                 servicesDir: 'services',
-                loadModule: function (name) {
-                    if (name.indexOf('blah.resource') >= 0) {
+                loadModule: function (moduleName) {
+                    if (moduleName.indexOf('blah.resource') >= 0) {
                         return {
                             methods: { backend: ['one', 'two'] }
                         };
