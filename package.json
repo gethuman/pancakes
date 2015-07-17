@@ -27,8 +27,8 @@
     "q": "^1.4.1"
   },
   "devDependencies": {
-    "batter": "0.1.4",
+    "batter": "0.1.5",
     "gulp": "^3.9.0",
-    "taste": "^0.2.2"
+    "taste": "^0.2.3"
   }
 }
