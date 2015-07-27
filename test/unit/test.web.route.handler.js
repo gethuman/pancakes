@@ -23,7 +23,7 @@ describe('Unit tests for ' + name, function () {
     describe('convertUrlPatternToRegex()', function () {
         it('should create a regular expression for a given URL', function () {
             var pattern = '/{slug}/_{urlId}';
-            var expected = /^\/[a-zA-Z0-9\-_~]+\/_[a-zA-Z0-9\-_~]+$/;
+            var expected = /^\/[^\\/]+\/_[^\\/]+$/;
             var actual = handler.convertUrlPatternToRegex(pattern);
             actual.should.deep.equal(expected);
         });
