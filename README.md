@@ -495,12 +495,12 @@ module.exports = function (_, fieldsets) {
                 access:             ['admin', 'user', 'visitor'],
                 select: {
                     restricted: {
-                        user:       ['author', 'modifyUserId', 'modifyUserType'],
-                        visitor:    ['author', 'modifyUserId', 'modifyUserType']
+                        user:       ['author', 'modifyUserId'],
+                        visitor:    ['author', 'modifyUserId']
                     },
                     'default': {
-                        user:       ['-author', '-modifyUserId', '-modifyUserType'],
-                        visitor:    ['-author', '-modifyUserId', '-modifyUserType']
+                        user:       ['-author', '-modifyUserId'],
+                        visitor:    ['-author', '-modifyUserId']
                     }
                 },
                 where: {
