@@ -1,6 +1,6 @@
 {
   "name": "pancakes",
-  "version": "0.1.111",
+  "version": "0.1.112",
   "description": "Flexible, SEO-friendly, full-stack JavaScript framework",
   "main": "lib/pancakes.js",
   "repository": {
@@ -27,8 +27,8 @@
     "q": "^1.4.1"
   },
   "devDependencies": {
-    "batter": "0.1.19",
+    "batter": "0.1.20",
     "gulp": "^3.9.0",
-    "taste": "^0.2.15"
+    "taste": "^0.2.16"
   }
 }
