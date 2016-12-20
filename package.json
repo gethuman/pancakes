@@ -21,14 +21,14 @@
   "homepage": "https://github.com/gethuman/pancakes",
   "dependencies": {
     "dot": "^1.1.1",
-    "eventemitter2": "^2.1.3",
-    "lodash": "^4.17.0",
-    "lru-cache": "4.0.1",
+    "eventemitter2": "^2.2.1",
+    "lodash": "^4.17.2",
+    "lru-cache": "^4.0.2",
     "q": "1.4.1"
   },
   "devDependencies": {
     "batter": "^0.1.51",
     "gulp": "3.9.1",
-    "taste": "^0.2.41"
+    "taste": "^0.2.42"
   }
 }
