@@ -1,6 +1,8 @@
 pancakes
 ========
 
+[![Join the chat at https://gitter.im/gethuman/pancakes](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gethuman/pancakes?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **NOTE**: This library is still under development and is not ready for use in the wild yet. I will post
 instructions here once it is ready for anyone to try out.
 
